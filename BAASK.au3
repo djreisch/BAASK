@@ -1,13 +1,21 @@
-; Batch Add Game Steam (BAGS) is an automation script to activate multiple keys on Steam
+; Batch Auto Activator for Steam Games (BAASK) is an automation script to activate multiple keys on Steam
 ;
-; It is derivative work of Steam Bulk Key Activator (SBKA) by Shedo Surashu
-; https://web.archive.org/web/20140214183818/http://coffeecone.com/sbka
+; This program is a continuation of Batch Add Game Steam (BAGS) by Sunder Iyer
+; https://github.com/goldenxp/batch-add-game-steam
+; Sunder derived his work from the Steam Bulk Key Activator (SBKA) by Shedo Surashu
+; https://web.archive.org/web/20140214183818/http://coffeecone.com/sbka (I know, this link is dead)
+;
 ; Steam altered their UI flow which invalidated SBKA's flow which spurred
 ; the creation of BAGS - which attempts to handle the new Add Game flow
 ; while introducing a new UI flow of its own.
-; Therefore, the following in compliance with SBKA's GPLv3 license
-; and in the spirit of free software is also released under GPLv3
-; Enjoy!
+;
+; The BAGS project became inactive but could still be improved. Iyer's code was cloned by Daniel Reisch
+; https://github.com/djreisch/BAASK
+; And is now maintained as BAASK (Batch Auto Activator for Steam Games)
+;
+; All parent and child practices have remained compliant with SBKA's GPLv3 license
+; as well as BAGS GPLv3 license and in the spirit of free software
+; this program (BAASK) is also released under GPLv3
 
 #include <Constants.au3>
 #include <ButtonConstants.au3>
