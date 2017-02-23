@@ -26,6 +26,7 @@ Local $buttonMsg = "Batch" & @CRLF & "Add" & @CRLF & "Game" & @CRLF & "Steam"
 Local $button = GUICtrlCreateButton($buttonMsg, 80, 480, 100, 100, $BS_MULTILINE)
 GUICtrlSetOnEvent($button, OnExecute)
 GUISetState(@SW_SHOW)
+FileOpen("duplicate_keys.txt", $FO_APPEND)
 
 ; Keep it running
 While True
@@ -53,6 +54,7 @@ EndFunc
 
 ; Exits the GUI
 Func OnClose()
+   FileClose("duplicate_keys.txt")
    Exit
 EndFunc
 
@@ -65,6 +67,7 @@ Func Redeem($key)
    Local $workingwin = "[TITLE:Steam - Working; REGEXPCLASS:USurface\_\d*]"
    Local $midX = @DesktopWidth / 2
    Local $midY = @DesktopHeight / 2
+
    If (WinExists($steamwin)) Then
 	  WinActivate($steamwin)
 	  If (WinActive($steamwin)) Then
@@ -72,6 +75,7 @@ Func Redeem($key)
 		 ; We will need to emulate mouse clicks on specific x,y positions
 		 ; To facilitate this we will maximize the window to ensure our top-left is 0,0
 		 ; and to ensure the top menu bar is completely exposed to click on
+
 		 WinSetState($steamwin, "", @SW_MAXIMIZE)
 		 ClickAndWait(150, 20)				; Click Games Menu and wait briefly for it
 		 ClickAndWait(150, 64, 0)			; Click Activate Product, Skip waiting
@@ -104,6 +108,9 @@ Func Redeem($key)
 			   ; Proceed thru the flow and cancel out
 			   ClickAndWait($buttonX, $buttonY)			; Click The Next Button, wait for next page
 			   ClickAndWait($buttonX + 50, $buttonY)	; Click the Cancel Button to bail out
+
+			   FileWriteLine("duplicate_keys.txt", $key )
+
 			EndIf
 			; Finished process
 		 EndIf ; (end product win exist)
