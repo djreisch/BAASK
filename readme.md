@@ -1,6 +1,6 @@
 # ---- Batch Activator for Steam Games ----
 
-##Batch Activator for Steam Games or BASK can activate keys automatically to your steam account.
+##Batch Activator for Steam Games (BASK) can activate keys automatically to your steam account.
 
 ###So far there are a few issues in play still
 1. The program MUST have the Steam window as the window behind the program window. If it doesn't, the program will return complete for all keys, this create some sub issues
@@ -10,18 +10,18 @@
 
 2. We have still yet to rename the application. Sorry for the confusion
 
-
+<br /><br />
 # ---- How To Use ----
 
-##Head over to the Release Page
+###Head over to the Release Page
 
 There you can download the compiled binaries and just run the executable file and be fine.
 
-##Grab the source and complile it yourself
+###Grab the source and complile it yourself
 
 Don't trust an executable you found on the internet? That's ok, go grab the source code from the release page, or clone this repo
 
-
+<br /><br />
 # ---- ABOUT ----
 
 This program was originally forked from the "dead" repo maintained by goldenxp, of which was a "Spiritual Successor to SBKA by CoffeeCone".
