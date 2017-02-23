@@ -24,14 +24,15 @@
 
 ; Set up simple event based GUI with 2 labels, 1 edit box and 1 button
 Opt("GUIOnEventMode", 1)
-Global $bags = GUICreate("BAGS", 260, 600)
+Global $baask = GUICreate("BAASK", 260, 600)
 GUISetOnEvent($GUI_EVENT_CLOSE, "OnClose")
 GUICtrlCreateLabel("Add Keys (one per line)", 30, 10)
 Global $editbox = GUICtrlCreateEdit("", 30, 30, 200, 400, $ES_WANTRETURN)
-GUICtrlCreateLabel("Note: Steam won't let you redeem" & @CRLF & "more than 25 keys a day.", 30, 440)
+GUICtrlCreateLabel("Note: Steam won't let you redeem more" & @CRLF & "than 25 keys per hour.", 30, 440)
 ; Create and hook up button
-Local $buttonMsg = "Batch" & @CRLF & "Add" & @CRLF & "Game" & @CRLF & "Steam"
-Local $button = GUICtrlCreateButton($buttonMsg, 80, 480, 100, 100, $BS_MULTILINE)
+Local $buttonMsg = "Run!"
+; Local $buttonMsg = "Run Batch" & @CRLF & "Auto" & @CRLF "Activator" & @CRLF && "for" & @CRLF & "Steam" & @CRLF & "Games"
+ Local $button = GUICtrlCreateButton($buttonMsg, 80, 480, 100, 100, $BS_MULTILINE)
 GUICtrlSetOnEvent($button, OnExecute)
 GUISetState(@SW_SHOW)
 FileOpen("duplicate_keys.txt", $FO_APPEND)
@@ -57,7 +58,7 @@ Func OnExecute()
    Else
 	  GUICtrlSetData($editBox, "(Psst! Type your keys here)")
    EndIf
-   WinActivate($bags);
+   WinActivate($baask);
 EndFunc
 
 ; Exits the GUI
