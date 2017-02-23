@@ -10,7 +10,7 @@
 
 2. We have still yet to rename the application. Sorry for the confusion
 
-<br /><br />
+<br />
 # ---- How To Use ----
 
 ###Head over to the Release Page
@@ -21,7 +21,7 @@ There you can download the compiled binaries and just run the executable file an
 
 Don't trust an executable you found on the internet? That's ok, go grab the source code from the release page, or clone this repo
 
-<br /><br />
+<br />
 # ---- ABOUT ----
 
 This program was originally forked from the "dead" repo maintained by goldenxp, of which was a "Spiritual Successor to SBKA by CoffeeCone".
