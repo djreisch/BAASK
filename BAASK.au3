@@ -21,6 +21,14 @@
 #include <ButtonConstants.au3>
 #include <EditConstants.au3>
 #include <GUIConstantsEx.au3>
+#include <File.au3>
+#include <GuiEdit.au3>
+
+#AutoIt3Wrapper_Res_Comment=Batch Auto Activator for Steam keys     ;Comment field
+#AutoIt3Wrapper_Res_Description=Batch Auto Activator for Steam keys ;Description field
+#AutoIt3Wrapper_Res_Fileversion=1.1.0.0                         	;File Version
+#AutoIt3Wrapper_Res_ProductVersion=1.1.0.0                      	;Product Version
+#AutoIt3Wrapper_Res_LegalCopyright=GPLv3                        	;Copyright field
 
 ; Set up simple event based GUI with 2 labels, 1 edit box and 1 button
 Opt("GUIOnEventMode", 1)
@@ -35,7 +43,6 @@ Local $buttonMsg = "Run!"
  Local $button = GUICtrlCreateButton($buttonMsg, 80, 480, 100, 100, $BS_MULTILINE)
 GUICtrlSetOnEvent($button, OnExecute)
 GUISetState(@SW_SHOW)
-FileOpen("duplicate_keys.txt", $FO_APPEND)
 
 ; Keep it running
 While True
@@ -47,6 +54,9 @@ Func OnExecute()
    Local $textBlock = GUICtrlRead($editbox)
    Local $keyArray = StringSplit($textBlock, @CRLF)
    Local $count = 0
+
+   GUICtrlSetData($editBox, "Duplicate Keys:" & @CRLF & @CRLF) ;writes header to UI box
+
    For $i = 1 to $keyArray[0]
 	  If ($keyArray[$i] <> "") Then
 		 Redeem($keyArray[$i])
@@ -54,7 +64,8 @@ Func OnExecute()
 	  EndIf
    Next
    If ($count > 0) Then
-	  GUICtrlSetData($editBox, "Completed (" & $count & ")")
+	   MsgBox(64, "Key Activation Complete!", "Out of " & $count & " keys, " & _GUICtrlEdit_GetLineCount($editBox) - 3 & " were for games you already own") ;shows popup window explaining what happened
+	   ; GUICtrlSetData($editBox, "Completed (" & $count & ")")
    Else
 	  GUICtrlSetData($editBox, "(Psst! Type your keys here)")
    EndIf
@@ -63,7 +74,6 @@ EndFunc
 
 ; Exits the GUI
 Func OnClose()
-   FileClose("duplicate_keys.txt")
    Exit
 EndFunc
 
@@ -118,7 +128,7 @@ Func Redeem($key)
 			   ClickAndWait($buttonX, $buttonY)			; Click The Next Button, wait for next page
 			   ClickAndWait($buttonX + 50, $buttonY)	; Click the Cancel Button to bail out
 
-			   FileWriteLine("duplicate_keys.txt", $key )
+			   _GUICtrlEdit_AppendText($editBox, $key & @CRLF) ;writes duplicate key to UI
 
 			EndIf
 			; Finished process
