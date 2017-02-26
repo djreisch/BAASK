@@ -23,8 +23,7 @@ Don't trust an executable you found on the internet? That's ok, go grab the sour
 
 ###Launching Program
 
-After you launch BAASK.exe (or compile it yourself, whatever the case) you need to enter in one key per line in the key box.
-Once you finish that BEFORE you click run, make sure the Steam is open and you can see the Steam window. Then you can click run.
+After you launch BAASK.exe (or compile it yourself, whatever the case) you need to enter in one key per line in the key box and when finished entering keys, click run.
 Avoid additional problems by not moving the mouse or using the keyboard until all the keys have been cycled through.
 
 <br /><br />
