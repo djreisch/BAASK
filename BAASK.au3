@@ -26,8 +26,8 @@
 
 #AutoIt3Wrapper_Res_Comment=Batch Auto Activator for Steam keys     ;Comment field
 #AutoIt3Wrapper_Res_Description=Batch Auto Activator for Steam keys ;Description field
-#AutoIt3Wrapper_Res_Fileversion=1.1.0.0                         	;File Version
-#AutoIt3Wrapper_Res_ProductVersion=1.1.0.0                      	;Product Version
+#AutoIt3Wrapper_Res_Fileversion=1.1.1.0                         	;File Version
+#AutoIt3Wrapper_Res_ProductVersion=1.1.1.0                      	;Product Version
 #AutoIt3Wrapper_Res_LegalCopyright=GPLv3                        	;Copyright field
 
 ; Set up simple event based GUI with 2 labels, 1 edit box and 1 button
@@ -39,8 +39,7 @@ Global $editbox = GUICtrlCreateEdit("", 30, 30, 200, 400, $ES_WANTRETURN)
 GUICtrlCreateLabel("Note: Steam won't let you redeem more" & @CRLF & "than 25 keys per hour.", 30, 440)
 ; Create and hook up button
 Local $buttonMsg = "Run!"
-; Local $buttonMsg = "Run Batch" & @CRLF & "Auto" & @CRLF "Activator" & @CRLF && "for" & @CRLF & "Steam" & @CRLF & "Games"
- Local $button = GUICtrlCreateButton($buttonMsg, 80, 480, 100, 100, $BS_MULTILINE)
+Local $button = GUICtrlCreateButton($buttonMsg, 80, 480, 100, 100, $BS_MULTILINE)
 GUICtrlSetOnEvent($button, OnExecute)
 GUISetState(@SW_SHOW)
 
@@ -65,11 +64,10 @@ Func OnExecute()
    Next
    If ($count > 0) Then
 	   MsgBox(64, "Key Activation Complete!", "Out of " & $count & " keys, " & _GUICtrlEdit_GetLineCount($editBox) - 3 & " were for games you already own") ;shows popup window explaining what happened
-	   ; GUICtrlSetData($editBox, "Completed (" & $count & ")")
    Else
 	  GUICtrlSetData($editBox, "(Psst! Type your keys here)")
    EndIf
-   WinActivate($baask);
+   WinActivate($baask)
 EndFunc
 
 ; Exits the GUI
@@ -81,23 +79,28 @@ EndFunc
 Func Redeem($key)
    ; Check if the Steam window is available using the title and class name
    ; Class name is USurface_ followed by a number, so we wildcard it
-   Local $steamwin = "[TITLE:Steam; REGEXPCLASS:USurface\_\d*]"
+
+   ; Local $steamwin = "[TITLE:Steam; REGEXPCLASS:USurface\_\d*]"
+
    Local $prodactwin = "[TITLE:Product Activation; REGEXPCLASS:USurface\_\d*]"
    Local $workingwin = "[TITLE:Steam - Working; REGEXPCLASS:USurface\_\d*]"
    Local $midX = @DesktopWidth / 2
    Local $midY = @DesktopHeight / 2
 
-   If (WinExists($steamwin)) Then
-	  WinActivate($steamwin)
-	  If (WinActive($steamwin)) Then
+;   If (WinExists($steamwin)) Then
+;	  WinActivate($steamwin)
+;	  If (WinActive($steamwin)) Then
 		 ; Steam doesn't have traditional buttons so we can't access any controls directly
 		 ; We will need to emulate mouse clicks on specific x,y positions
 		 ; To facilitate this we will maximize the window to ensure our top-left is 0,0
 		 ; and to ensure the top menu bar is completely exposed to click on
 
-		 WinSetState($steamwin, "", @SW_MAXIMIZE)
-		 ClickAndWait(150, 20)				; Click Games Menu and wait briefly for it
-		 ClickAndWait(150, 64, 0)			; Click Activate Product, Skip waiting
+;		 WinSetState($steamwin, "", @SW_MAXIMIZE)
+;		 ClickAndWait(150, 20)				; Click Games Menu and wait briefly for it
+;		 ClickAndWait(150, 64, 0)			; Click Activate Product, Skip waiting
+
+		 ShellExecute("steam://open/activateproduct")
+
 		 WinWait($prodactwin, "", 5)		; Explicitly wait for Product Activation window
 		 If WinExists($prodactwin) Then
 			; Window appears in the center of the desktop, use this as point of reference
@@ -132,8 +135,8 @@ Func Redeem($key)
 
 			EndIf
 			; Finished process
-		 EndIf ; (end product win exist)
-	  EndIf ; (end steam win active)
+		 ;EndIf ; (end product win exist)
+	  ;EndIf ; (end steam win active)
    EndIf
 EndFunc
 
