@@ -66,7 +66,7 @@ Func OnExecute()
 	  EndIf
    Next
    If ($count > 0) Then
-	   MsgBox(64, "Key Activation Complete!", "Out of " & $count & " keys, " & _GUICtrlEdit_GetLineCount($editBox) - 3 & " were duplicates")
+	   MsgBox(64, "Key Activation Complete!", "Out of " & $count & " keys, " & _GUICtrlEdit_GetLineCount($editBox) - 3 & " were for games you already own")
 	   ; GUICtrlSetData($editBox, "Completed (" & $count & ")")
    Else
 	  GUICtrlSetData($editBox, "(Psst! Type your keys here)")
