@@ -55,7 +55,7 @@ Func OnExecute()
    Local $keyArray = StringSplit($textBlock, @CRLF)
    Local $count = 0
 
-   GUICtrlSetData($editBox, "Duplicate Keys:" & @CRLF & @CRLF)
+   GUICtrlSetData($editBox, "Duplicate Keys:" & @CRLF & @CRLF) ;writes header to UI box
 
    For $i = 1 to $keyArray[0]
 	  If ($keyArray[$i] <> "") Then
@@ -64,7 +64,7 @@ Func OnExecute()
 	  EndIf
    Next
    If ($count > 0) Then
-	   MsgBox(64, "Key Activation Complete!", "Out of " & $count & " keys, " & _GUICtrlEdit_GetLineCount($editBox) - 3 & " were for games you already own")
+	   MsgBox(64, "Key Activation Complete!", "Out of " & $count & " keys, " & _GUICtrlEdit_GetLineCount($editBox) - 3 & " were for games you already own") ;shows popup window explaining what happened
 	   ; GUICtrlSetData($editBox, "Completed (" & $count & ")")
    Else
 	  GUICtrlSetData($editBox, "(Psst! Type your keys here)")
@@ -128,7 +128,7 @@ Func Redeem($key)
 			   ClickAndWait($buttonX, $buttonY)			; Click The Next Button, wait for next page
 			   ClickAndWait($buttonX + 50, $buttonY)	; Click the Cancel Button to bail out
 
-			   _GUICtrlEdit_AppendText($editBox, $key & @CRLF)
+			   _GUICtrlEdit_AppendText($editBox, $key & @CRLF) ;writes duplicate key to UI
 
 			EndIf
 			; Finished process
