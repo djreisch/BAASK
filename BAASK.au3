@@ -43,8 +43,6 @@ Local $buttonMsg = "Run!"
  Local $button = GUICtrlCreateButton($buttonMsg, 80, 480, 100, 100, $BS_MULTILINE)
 GUICtrlSetOnEvent($button, OnExecute)
 GUISetState(@SW_SHOW)
-FileOpen("duplicate_keys.txt", $FO_APPEND)
-Global $output = "duplicate_keys.txt"
 
 ; Keep it running
 While True
@@ -76,7 +74,6 @@ EndFunc
 
 ; Exits the GUI
 Func OnClose()
-   FileClose("duplicate_keys.txt")
    Exit
 EndFunc
 
@@ -131,7 +128,6 @@ Func Redeem($key)
 			   ClickAndWait($buttonX, $buttonY)			; Click The Next Button, wait for next page
 			   ClickAndWait($buttonX + 50, $buttonY)	; Click the Cancel Button to bail out
 
-			   FileWriteLine("duplicate_keys.txt", $key )
 			   _GUICtrlEdit_AppendText($editBox, $key & @CRLF)
 
 			EndIf
