@@ -43,6 +43,8 @@ Local $button = GUICtrlCreateButton($buttonMsg, 80, 480, 100, 100, $BS_MULTILINE
 GUICtrlSetOnEvent($button, OnExecute)
 GUISetState(@SW_SHOW)
 
+HotKeySet("{ESC}","Quit") ;Press ESC key to quit
+
 ; Keep it running
 While True
    Sleep(100)
@@ -147,4 +149,9 @@ Func ClickAndWait($x, $y, $wait=200)
    If ($wait > 0) Then
 	  Sleep($wait)
    EndIf
+EndFunc
+
+; Quits script when called
+Func Quit()
+    Exit
 EndFunc
