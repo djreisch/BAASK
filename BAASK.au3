@@ -105,17 +105,33 @@ Func Redeem($key)
 
 		 WinWait($prodactwin, "", 5)		; Explicitly wait for Product Activation window
 		 If WinExists($prodactwin) Then
+
+			local $prodactwinpos = WinGetPos($prodactwin)
+
+			Local $nextX = $prodactwinpos[0] + 313
+			Local $nextY = $prodactwinpos[1] + 374
+
+			Local $cancelX = $prodactwinpos[0] + 414
+			Local $cancelY = $prodactwinpos[1] + 374
+
+			Local $printX = $prodactwinpos[0] + 222
+			Local $printY = $prodactwinpos[1] + 278
+
+
 			; Window appears in the center of the desktop, use this as point of reference
 			; We will be clicking the second button at the bottom of the window, So
 			; calculate its offset from the center for re-usage
-			Local $buttonX = $midX + 100
-			Local $buttonY = $midY + 150
-			ClickAndWait($buttonX, $buttonY)	; Click the Next Button and wait for next page
-			ClickAndWait($buttonX, $buttonY)	; Click on I Agree, wait for next page
+
+
+			ClickAndWait($nextX, $nextY)	; Click the Next Button and wait for next page
+			ClickAndWait($nextX, $nextY)	; Click on I Agree, wait for next page
+
 			Send($key)							; Write the key in auto-focused field
 			Sleep(200)							; Pause briefly for visual feedback
-			ClickAndWait($buttonX, $buttonY)	; Click on Next to submit form
+
+			ClickAndWait($nextX, $nextY)	; Click on Next to submit form
 			; Wait for the Working Window to come and go
+
 			WinWait($workingwin, "", 5)
 			If WinExists($workingwin) Then
 			   WinWaitClose($workingwin)
@@ -123,15 +139,15 @@ Func Redeem($key)
 			; Whether the key succeeded or failed, we will click the 3rd button as a possible final Step
 			; We will wait a little longer here as it is possible for Steam to stutter so we'll
 			; give the system a second or two to catch up
-			ClickAndWait($buttonX + 50, $buttonY)
+			ClickAndWait($cancelX, $cancelY)
 			; So, this should close the window if the key was redeemed or the key was invalid.
 			; However, if the key was already redeemed on the account, we enter a new flow
 			; of trying to download the game. So check if the window still exists
 			If WinExists($prodactwin) Then
 			   ; We will not download the game. Unfortunately, it seems the window cannot be closed
 			   ; Proceed thru the flow and cancel out
-			   ClickAndWait($buttonX, $buttonY)			; Click The Next Button, wait for next page
-			   ClickAndWait($buttonX + 50, $buttonY)	; Click the Cancel Button to bail out
+			   ClickAndWait($nextX, $nextY)			; Click The Next Button, wait for next page
+			   ClickAndWait($cancelX, $cancelY)	; Click the Cancel Button to bail out
 
 			   _GUICtrlEdit_AppendText($editBox, $key & @CRLF) ;writes duplicate key to UI
 
