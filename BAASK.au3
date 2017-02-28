@@ -26,8 +26,8 @@
 
 #AutoIt3Wrapper_Res_Comment=Batch Auto Activator for Steam keys     ;Comment field
 #AutoIt3Wrapper_Res_Description=Batch Auto Activator for Steam keys ;Description field
-#AutoIt3Wrapper_Res_Fileversion=1.1.1.0                         	;File Version
-#AutoIt3Wrapper_Res_ProductVersion=1.1.1.0                      	;Product Version
+#AutoIt3Wrapper_Res_Fileversion=2.0.0.0                         	;File Version
+#AutoIt3Wrapper_Res_ProductVersion=2.0.0.0                      	;Product Version
 #AutoIt3Wrapper_Res_LegalCopyright=GPLv3                        	;Copyright field
 
 ; Set up simple event based GUI with 2 labels, 1 edit box and 1 button
