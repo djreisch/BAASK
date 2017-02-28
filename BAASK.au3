@@ -86,8 +86,10 @@ Func Redeem($key)
 
    Local $prodactwin = "[TITLE:Product Activation; REGEXPCLASS:USurface\_\d*]"
    Local $workingwin = "[TITLE:Steam - Working; REGEXPCLASS:USurface\_\d*]"
-   Local $midX = @DesktopWidth / 2
-   Local $midY = @DesktopHeight / 2
+   Local $printwin   = "[TITLE:Print; REGEXPCLASS:#32770]"
+   Local $installwin = "[TITLE:Install - ; REGEXPCLASS:USurface\_\d*]"
+
+
 
 ;   If (WinExists($steamwin)) Then
 ;	  WinActivate($steamwin)
@@ -101,45 +103,87 @@ Func Redeem($key)
 ;		 ClickAndWait(150, 20)				; Click Games Menu and wait briefly for it
 ;		 ClickAndWait(150, 64, 0)			; Click Activate Product, Skip waiting
 
-		 ShellExecute("steam://open/activateproduct")
+		ShellExecute("steam://open/activateproduct")
 
-		 WinWait($prodactwin, "", 5)		; Explicitly wait for Product Activation window
-		 If WinExists($prodactwin) Then
+		WinWait($prodactwin, "", 5)		; Explicitly wait for Product Activation window
+		If WinExists($prodactwin) Then
+
+			local $prodactwinpos = WinGetPos($prodactwin)
+
+
+			Local $backX = $prodactwinpos[0] + 214
+			Local $backY = $prodactwinpos[1] + 374
+
+			Local $nextX = $prodactwinpos[0] + 314
+			Local $nextY = $prodactwinpos[1] + 374
+
+			Local $cancelX = $prodactwinpos[0] + 414
+			Local $cancelY = $prodactwinpos[1] + 374
+
+			Local $finishX = $prodactwinpos[0] + 414
+			Local $finishy = $prodactwinpos[1] + 374
+
+			Local $printX = $prodactwinpos[0] + 222
+			Local $printY = $prodactwinpos[1] + 278
+
+
 			; Window appears in the center of the desktop, use this as point of reference
 			; We will be clicking the second button at the bottom of the window, So
 			; calculate its offset from the center for re-usage
-			Local $buttonX = $midX + 100
-			Local $buttonY = $midY + 150
-			ClickAndWait($buttonX, $buttonY)	; Click the Next Button and wait for next page
-			ClickAndWait($buttonX, $buttonY)	; Click on I Agree, wait for next page
+
+
+			ClickAndWait($nextX, $nextY)	; Click the Next Button and wait for next page
+			ClickAndWait($nextX, $nextY)	; Click on I Agree, wait for next page
+
 			Send($key)							; Write the key in auto-focused field
 			Sleep(200)							; Pause briefly for visual feedback
-			ClickAndWait($buttonX, $buttonY)	; Click on Next to submit form
-			; Wait for the Working Window to come and go
-			WinWait($workingwin, "", 5)
-			If WinExists($workingwin) Then
-			   WinWaitClose($workingwin)
-			EndIf
-			; Whether the key succeeded or failed, we will click the 3rd button as a possible final Step
-			; We will wait a little longer here as it is possible for Steam to stutter so we'll
-			; give the system a second or two to catch up
-			ClickAndWait($buttonX + 50, $buttonY)
-			; So, this should close the window if the key was redeemed or the key was invalid.
-			; However, if the key was already redeemed on the account, we enter a new flow
-			; of trying to download the game. So check if the window still exists
-			If WinExists($prodactwin) Then
-			   ; We will not download the game. Unfortunately, it seems the window cannot be closed
-			   ; Proceed thru the flow and cancel out
-			   ClickAndWait($buttonX, $buttonY)			; Click The Next Button, wait for next page
-			   ClickAndWait($buttonX + 50, $buttonY)	; Click the Cancel Button to bail out
 
-			   _GUICtrlEdit_AppendText($editBox, $key & @CRLF) ;writes duplicate key to UI
+			ClickAndWait($nextX, $nextY)	; Click on Next to submit form
+			Sleep(200)						; Must Wait for the Working Window to come and go
+
+
+
+			ClickAndWait($printX, $printY)	; Click on Print to see if the print box opens
+			WinWait($printwin, "", 5) ;waits for print window
+			If(WinExists($printwin)) Then  ;if the print window exists
+
+				WinClose($printwin)   ;close the print window
+				WinClose($prodactwin) ;close the product window, the key worked
+			EndIf
+
+			If(WinExists($prodactwin)) Then ;if the key didn't work we are going to check if it's a duplicate
+
+				ClickAndWait($nextX, $nextY) ;clicks next if available
+
+				WinWait($installwin, "", 5)  ;waits for installation window
+
+				If WinExists($installwin) Then ;if installation window opens...
+				   WinClose($installwin)   ;close it
+				   _GUICtrlEdit_AppendText($editBox, $key & @CRLF) ;write duplicate key to UI
+				EndIf
 
 			EndIf
+
+			If(WinExists($prodactwin)) Then ;if the key didn't work and wasn't a duplicate, there might be another issue
+
+				Local $userAnswer = MsgBox(20, "The Program Encountered an Error", "Does the Product Activation window behind this message say there have been Too Many Activation Attempts?") ;shows popup if key is bad or too many activation attemtps
+
+				If($userAnswer = $IDYES) Then
+					_GUICtrlEdit_AppendText($editBox, "Unknown" & @CRLF & $key & @CRLF)
+					WinClose($prodactwin)
+					MsgBox(48, "Warning!", "Steam won't let you activate anymore keys right now." & @CRLF & "The last key used has been written to the program window underneath the unknown section. You should retry this key later as it may work on your account." & @CRLF & "We recommend waiting at least one hour before attempting to activate more keys" & @CRLF & @CRLF & "WARNING: Please remember to copy your duplicate keys from the program window." & @CRLF & @CRLF & "Pressing OK will EXIT the program")
+					Quit
+				Else
+					WinClose($prodactwin)
+				EndIf
+
+			EndIf
+
+		EndIf
 			; Finished process
 		 ;EndIf ; (end product win exist)
 	  ;EndIf ; (end steam win active)
-   EndIf
+   ;EndIf
 EndFunc
 
 ; Helper function to click a specific point and wait a specific delay
