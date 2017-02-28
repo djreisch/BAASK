@@ -171,7 +171,7 @@ Func Redeem($key)
 				If($userAnswer = $IDYES) Then
 					_GUICtrlEdit_AppendText($editBox, "Unknown" & @CRLF & $key & @CRLF)
 					WinClose($prodactwin)
-					MsgBox(48, "Warning!", "Steam won't let you activate anymore keys right now." & @CRLF & "The last key used has been written to the program window underneath the unknown section. You should retry this key later as it may work on your account." & @CRLF & "We suggest waiting at least one hour before attempting to activate more keys" & @CRLF & @CRLF & "WARNING: Please remember to copy your duplicate keys from the program window." & @CRLF & @CRLF & "Pressing OK will EXIT the program")
+					MsgBox(48, "Warning!", "Steam won't let you activate anymore keys right now." & @CRLF & "The last key used has been written to the program window underneath the unknown section. You should retry this key later as it may work on your account." & @CRLF & "We recommend waiting at least one hour before attempting to activate more keys" & @CRLF & @CRLF & "WARNING: Please remember to copy your duplicate keys from the program window." & @CRLF & @CRLF & "Pressing OK will EXIT the program")
 					Quit
 				Else
 					WinClose($prodactwin)
