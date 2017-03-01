@@ -30,26 +30,29 @@
 #AutoIt3Wrapper_Res_ProductVersion=2.1.0.0                      	;Product Version
 #AutoIt3Wrapper_Res_LegalCopyright=GPLv3                        	;Copyright field
 
-; Set up simple event based GUI with 2 labels, 1 edit box and 1 button
-Opt("GUIOnEventMode", 1)
-Global $baask = GUICreate("BAASK", 260, 600)
-GUISetOnEvent($GUI_EVENT_CLOSE, "Quit")
-GUICtrlCreateLabel("Add Keys (one per line)", 30, 10)
-Global $editbox = GUICtrlCreateEdit("", 30, 30, 200, 400, $ES_WANTRETURN)
-GUICtrlCreateLabel("Note: Steam won't let you redeem more" & @CRLF & "than 25 keys per hour.", 30, 440)
+; Starts to set up simple event based GUI with 2 labels, 1 edit box and 1 button
+
+Opt("GUIOnEventMode", 1) ;enables on even functions
+Global $baask = GUICreate("BAASK", 260, 600) ;creates the baask GUI
+GUISetOnEvent($GUI_EVENT_CLOSE, "Quit")      ;enables that when the GUI closes, the script terminates
+GUICtrlCreateLabel("Add Keys (one per line)", 30, 10) ;creates a GUI label in the top left
+Global $editbox = GUICtrlCreateEdit("", 30, 30, 200, 400, $ES_WANTRETURN) ;creates an edit box
+GUICtrlCreateLabel("Note: Steam won't let you redeem more" & @CRLF & "than 25 keys per hour.", 30, 440) ;displays note under the text box
+
 ; Create and hook up button
-Local $buttonMsg = "Run!"
-Local $button = GUICtrlCreateButton($buttonMsg, 80, 480, 100, 100, $BS_MULTILINE)
-GUICtrlSetOnEvent($button, OnExecute)
-GUISetState(@SW_SHOW)
+;Local $buttonMsg = "Run!" ;creates button button message
+Local $button = GUICtrlCreateButton("Run!", 80, 480, 100, 100, $BS_MULTILINE) ;creates a multi-lined button with the text
+GUICtrlSetOnEvent($button, OnExecute) ;sets that when button is clicked, execute function OnExecute
+GUISetState(@SW_SHOW) ;makes sure the GUI is shown
 
 
-HotKeySet("{ESC}","Quit") ;Press ESC key to quit
+HotKeySet("{ESC}","Quit") ;Press ESC key to quit program at any time
 
-; Keep it running
+; Keeps the program running forever until the Quit function is called
 While True
    Sleep(100)
 WEnd
+
 
 ; Attempts to redeem each line in the edit field as a key for a new game (or product)
 Func OnExecute()
@@ -187,6 +190,7 @@ Func Redeem($key)
    ;EndIf
 EndFunc
 
+
 ; Helper function to click a specific point and wait a specific delay
 ; Delay is 200 by default and is ignored when set to 0
 Func ClickAndWait($x, $y, $wait=200)
@@ -195,6 +199,7 @@ Func ClickAndWait($x, $y, $wait=200)
 	  Sleep($wait)
    EndIf
 EndFunc
+
 
 ; Quits script when called
 Func Quit()
