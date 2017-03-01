@@ -35,7 +35,7 @@
 Opt("GUIOnEventMode", 1) ;enables on even functions
 Global $baask = GUICreate("BAASK", 260, 600) ;creates the baask GUI
 GUISetOnEvent($GUI_EVENT_CLOSE, "Quit")      ;enables that when the GUI closes, the script terminates
-GUICtrlCreateLabel("Add Keys (one per line)", 30, 10) ;creates a GUI label in the top left
+GUICtrlCreateLabel("Add Your Keys (one per line)", 30, 10) ;creates a GUI label in the top left
 Global $editbox = GUICtrlCreateEdit("", 30, 30, 200, 400, $ES_WANTRETURN) ;creates an edit box
 GUICtrlCreateLabel("Note: Steam won't let you redeem more" & @CRLF & "than 25 keys per hour.", 30, 440) ;displays note under the text box
 
@@ -60,7 +60,8 @@ Func OnExecute()
    Local $keyArray = StringSplit($textBlock, @CRLF)
    Local $count = 0
 
-   GUICtrlSetData($editBox, "Duplicate Keys:" & @CRLF & @CRLF) ;writes header to UI box
+   _GUICtrlEdit_AppendText($editBox, @CRLF & @CRLF & "Duplicate Keys:" & @CRLF)
+   ;GUICtrlSetData($editBox, "Duplicate Keys:" & @CRLF & @CRLF) ;writes header to UI box
 
    For $i = 1 to $keyArray[0]
 	  If ($keyArray[$i] <> "") Then
@@ -70,7 +71,7 @@ Func OnExecute()
    Next
 
    If ($count > 0) Then
-	   MsgBox(64, "Key Activation Complete!", "Out of " & $count & " keys, " & _GUICtrlEdit_GetLineCount($editBox) - 3 & " were for games you already own") ;shows popup window explaining what happened
+	   MsgBox(64, "Key Activation Complete!", "Don't forget to copy your duplicate keys from the program window (these keys can be used on another account)") ;shows popup window explaining what happened
    Else
 	  GUICtrlSetData($editBox, "(Psst! Type your keys here)")
    EndIf
@@ -84,13 +85,13 @@ EndFunc
 
 ; Meaty function that emulates user's action to redeem a steam key
 Func Redeem($key)
-   ; Check if the Steam window is available using the title and class name
-   ; Class name is USurface_ followed by a number, so we wildcard it
+   ;Check if the Steam window is available using the title and class name
+   ;Class name is USurface_ followed by a number, so we wildcard it
 
-   ; Local $steamwin = "[TITLE:Steam; REGEXPCLASS:USurface\_\d*]"
+   ;Local $steamwin = "[TITLE:Steam; REGEXPCLASS:USurface\_\d*]"
 
    Local $prodactwin = "[TITLE:Product Activation; REGEXPCLASS:USurface\_\d*]"
-   Local $workingwin = "[TITLE:Steam - Working; REGEXPCLASS:USurface\_\d*]"
+   ;Local $workingwin = "[TITLE:Steam - Working; REGEXPCLASS:USurface\_\d*]"
    Local $printwin   = "[TITLE:Print; REGEXPCLASS:#32770]"
    Local $installwin = "[TITLE:Install - ; REGEXPCLASS:USurface\_\d*]"
 
@@ -175,8 +176,10 @@ Func Redeem($key)
 
 				If($userAnswer = $IDYES) Then
 					WinClose($prodactwin)
-					MsgBox(48, "Warning!", "Steam won't let you activate anymore keys right now." & @CRLF & "The key " & $key & " and any key after it has not been tested yet. You should retry this key and all keys after it later, as they may work on your account." & @CRLF & "We recommend waiting at least one hour before attempting to activate more keys" & @CRLF & @CRLF & "WARNING: Please remember to copy your duplicate keys from the program window." & @CRLF & @CRLF & "Pressing OK will EXIT the program")
+					MsgBox(48, "Warning!", "Steam won't let you activate anymore keys right now." & @CRLF & @CRLF & "The key " & $key & " and any keys after it have not been checked yet. These keys might not be duplicates and should be retried once you can activate more keys." & @CRLF & @CRLF & "We recommend waiting at least one hour before attempting to activate more keys." & @CRLF & @CRLF & "WARNING: Please remember to copy your duplicate keys (if any) from the program window and then click OK on this window")
+
 					Quit
+
 				Else
 					WinClose($prodactwin)
 				EndIf
