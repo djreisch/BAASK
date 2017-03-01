@@ -26,29 +26,33 @@
 
 #AutoIt3Wrapper_Res_Comment=Batch Auto Activator for Steam keys     ;Comment field
 #AutoIt3Wrapper_Res_Description=Batch Auto Activator for Steam keys ;Description field
-#AutoIt3Wrapper_Res_Fileversion=2.0.0.0                         	;File Version
-#AutoIt3Wrapper_Res_ProductVersion=2.0.0.0                      	;Product Version
+#AutoIt3Wrapper_Res_Fileversion=2.1.0.0                         	;File Version
+#AutoIt3Wrapper_Res_ProductVersion=2.1.0.0                      	;Product Version
 #AutoIt3Wrapper_Res_LegalCopyright=GPLv3                        	;Copyright field
 
-; Set up simple event based GUI with 2 labels, 1 edit box and 1 button
-Opt("GUIOnEventMode", 1)
-Global $baask = GUICreate("BAASK", 260, 600)
-GUISetOnEvent($GUI_EVENT_CLOSE, "OnClose")
-GUICtrlCreateLabel("Add Keys (one per line)", 30, 10)
-Global $editbox = GUICtrlCreateEdit("", 30, 30, 200, 400, $ES_WANTRETURN)
-GUICtrlCreateLabel("Note: Steam won't let you redeem more" & @CRLF & "than 25 keys per hour.", 30, 440)
+; Starts to set up simple event based GUI with 2 labels, 1 edit box and 1 button
+
+Opt("GUIOnEventMode", 1) ;enables on even functions
+Global $baask = GUICreate("BAASK", 260, 600) ;creates the baask GUI
+GUISetOnEvent($GUI_EVENT_CLOSE, "Quit")      ;enables that when the GUI closes, the script terminates
+GUICtrlCreateLabel("Add Your Keys (one per line)", 30, 10) ;creates a GUI label in the top left
+Global $editbox = GUICtrlCreateEdit("", 30, 30, 200, 400, $ES_WANTRETURN) ;creates an edit box
+GUICtrlCreateLabel("Note: Steam won't let you redeem more" & @CRLF & "than 25 keys per hour.", 30, 440) ;displays note under the text box
+
 ; Create and hook up button
-Local $buttonMsg = "Run!"
-Local $button = GUICtrlCreateButton($buttonMsg, 80, 480, 100, 100, $BS_MULTILINE)
-GUICtrlSetOnEvent($button, OnExecute)
-GUISetState(@SW_SHOW)
+;Local $buttonMsg = "Run!" ;creates button button message
+Local $button = GUICtrlCreateButton("Run!", 80, 480, 100, 100, $BS_MULTILINE) ;creates a multi-lined button with the text
+GUICtrlSetOnEvent($button, OnExecute) ;sets that when button is clicked, execute function OnExecute
+GUISetState(@SW_SHOW) ;makes sure the GUI is shown
 
-HotKeySet("{ESC}","Quit") ;Press ESC key to quit
 
-; Keep it running
+HotKeySet("{ESC}","Quit") ;Press ESC key to quit program at any time
+
+; Keeps the program running forever until the Quit function is called
 While True
    Sleep(100)
 WEnd
+
 
 ; Attempts to redeem each line in the edit field as a key for a new game (or product)
 Func OnExecute()
@@ -56,7 +60,8 @@ Func OnExecute()
    Local $keyArray = StringSplit($textBlock, @CRLF)
    Local $count = 0
 
-   GUICtrlSetData($editBox, "Duplicate Keys:" & @CRLF & @CRLF) ;writes header to UI box
+   _GUICtrlEdit_AppendText($editBox, @CRLF & @CRLF & "Duplicate Keys:" & @CRLF)
+   ;GUICtrlSetData($editBox, "Duplicate Keys:" & @CRLF & @CRLF) ;writes header to UI box
 
    For $i = 1 to $keyArray[0]
 	  If ($keyArray[$i] <> "") Then
@@ -64,127 +69,120 @@ Func OnExecute()
 		 $count = $count + 1
 	  EndIf
    Next
+
    If ($count > 0) Then
-	   MsgBox(64, "Key Activation Complete!", "Out of " & $count & " keys, " & _GUICtrlEdit_GetLineCount($editBox) - 3 & " were for games you already own") ;shows popup window explaining what happened
+	   MsgBox(64, "Key Activation Complete!", "Don't forget to copy your duplicate keys from the program window (these keys can be used on another account)") ;shows popup window explaining what happened
    Else
 	  GUICtrlSetData($editBox, "(Psst! Type your keys here)")
    EndIf
    WinActivate($baask)
 EndFunc
 
-; Exits the GUI
-Func OnClose()
-   Exit
-EndFunc
 
-; Meaty function that emulates user's action to redeem a steam key
+;Function that emulates the key activation process
 Func Redeem($key)
-   ; Check if the Steam window is available using the title and class name
-   ; Class name is USurface_ followed by a number, so we wildcard it
 
-   ; Local $steamwin = "[TITLE:Steam; REGEXPCLASS:USurface\_\d*]"
+   ;Variables are used to check if certain Steam windows are available using the title and class name
+   ;Class name for the Steam Activation windows are USurface_ followed by a number, so we wildcard it
 
-   Local $prodactwin = "[TITLE:Product Activation; REGEXPCLASS:USurface\_\d*]"
-   Local $workingwin = "[TITLE:Steam - Working; REGEXPCLASS:USurface\_\d*]"
-   Local $printwin   = "[TITLE:Print; REGEXPCLASS:#32770]"
-   Local $installwin = "[TITLE:Install - ; REGEXPCLASS:USurface\_\d*]"
+   Local $prodactwin = "[TITLE:Product Activation; REGEXPCLASS:USurface\_\d*]" ;general activation window
+   Local $printwin   = "[TITLE:Print; REGEXPCLASS:#32770]"					   ;system print window (used to check if product key worked)
+   Local $installwin = "[TITLE:Install - ; REGEXPCLASS:USurface\_\d*]"		   ;Steam game install window (used to check if duplicate key)
 
 
 
-;   If (WinExists($steamwin)) Then
-;	  WinActivate($steamwin)
-;	  If (WinActive($steamwin)) Then
-		 ; Steam doesn't have traditional buttons so we can't access any controls directly
-		 ; We will need to emulate mouse clicks on specific x,y positions
-		 ; To facilitate this we will maximize the window to ensure our top-left is 0,0
-		 ; and to ensure the top menu bar is completely exposed to click on
+	ShellExecute("steam://open/activateproduct") ;opens the Steam activation window
 
-;		 WinSetState($steamwin, "", @SW_MAXIMIZE)
-;		 ClickAndWait(150, 20)				; Click Games Menu and wait briefly for it
-;		 ClickAndWait(150, 64, 0)			; Click Activate Product, Skip waiting
+	WinWait($prodactwin, "", 5)		; Explicitly wait for Product Activation window
+	If WinExists($prodactwin) Then
 
-		ShellExecute("steam://open/activateproduct")
-
-		WinWait($prodactwin, "", 5)		; Explicitly wait for Product Activation window
-		If WinExists($prodactwin) Then
-
-			local $prodactwinpos = WinGetPos($prodactwin)
+		local $prodactwinpos = WinGetPos($prodactwin) ;gets position of the steam activation window
 
 
-			Local $backX = $prodactwinpos[0] + 214
-			Local $backY = $prodactwinpos[1] + 374
+		;these next several variables determine the position of the activation buttons based on the window location determined in the above statement
 
-			Local $nextX = $prodactwinpos[0] + 314
-			Local $nextY = $prodactwinpos[1] + 374
+		Local $backX = $prodactwinpos[0] + 214
+		Local $backY = $prodactwinpos[1] + 374
 
-			Local $cancelX = $prodactwinpos[0] + 414
-			Local $cancelY = $prodactwinpos[1] + 374
+		Local $nextX = $prodactwinpos[0] + 314
+		Local $nextY = $prodactwinpos[1] + 374
 
-			Local $finishX = $prodactwinpos[0] + 414
-			Local $finishy = $prodactwinpos[1] + 374
+		Local $cancelX = $prodactwinpos[0] + 414
+		Local $cancelY = $prodactwinpos[1] + 374
 
-			Local $printX = $prodactwinpos[0] + 222
-			Local $printY = $prodactwinpos[1] + 278
+		Local $finishX = $prodactwinpos[0] + 414
+		Local $finishy = $prodactwinpos[1] + 374
 
-
-			; Window appears in the center of the desktop, use this as point of reference
-			; We will be clicking the second button at the bottom of the window, So
-			; calculate its offset from the center for re-usage
-
-
-			ClickAndWait($nextX, $nextY)	; Click the Next Button and wait for next page
-			ClickAndWait($nextX, $nextY)	; Click on I Agree, wait for next page
-
-			Send($key)							; Write the key in auto-focused field
-			Sleep(200)							; Pause briefly for visual feedback
-
-			ClickAndWait($nextX, $nextY)	; Click on Next to submit form
-			Sleep(200)						; Must Wait for the Working Window to come and go
+		Local $printX = $prodactwinpos[0] + 222
+		Local $printY = $prodactwinpos[1] + 278
 
 
 
-			ClickAndWait($printX, $printY)	; Click on Print to see if the print box opens
-			WinWait($printwin, "", 5) ;waits for print window
-			If(WinExists($printwin)) Then  ;if the print window exists
+		;BEGINS button clicking
 
-				WinClose($printwin)   ;close the print window
-				WinClose($prodactwin) ;close the product window, the key worked
-			EndIf
+		ClickAndWait($nextX, $nextY)	; Click the Next Button and wait for next page
+		ClickAndWait($nextX, $nextY)	; Click on I Agree, wait for next page
 
-			If(WinExists($prodactwin)) Then ;if the key didn't work we are going to check if it's a duplicate
+		Send($key)						; Write the key in auto-focused field
+		Sleep(200)						; Pause briefly for visual feedback
 
-				ClickAndWait($nextX, $nextY) ;clicks next if available
+		ClickAndWait($nextX, $nextY)	; Click on Next to submit form
+		Sleep(200)						; Must Wait for the Working Window to come and go
 
-				WinWait($installwin, "", 5)  ;waits for installation window
 
-				If WinExists($installwin) Then ;if installation window opens...
-				   WinClose($installwin)   ;close it
-				   _GUICtrlEdit_AppendText($editBox, $key & @CRLF) ;write duplicate key to UI
-				EndIf
 
-			EndIf
+		ClickAndWait($printX, $printY)	; Click on Print to see if the print box opens
+		WinWait($printwin, "", 6)       ;waits for print window
+		If(WinExists($printwin)) Then   ;if the print window exists begin statement
 
-			If(WinExists($prodactwin)) Then ;if the key didn't work and wasn't a duplicate, there might be another issue
+			WinClose($printwin)   ;close the print window
+			WinClose($prodactwin) ;close the product window, the key worked
 
-				Local $userAnswer = MsgBox(20, "The Program Encountered an Error", "Does the Product Activation window behind this message say there have been Too Many Activation Attempts?") ;shows popup if key is bad or too many activation attemtps
+		EndIf
 
-				If($userAnswer = $IDYES) Then
-					_GUICtrlEdit_AppendText($editBox, "Unknown" & @CRLF & $key & @CRLF)
-					WinClose($prodactwin)
-					MsgBox(48, "Warning!", "Steam won't let you activate anymore keys right now." & @CRLF & "The last key used has been written to the program window underneath the unknown section. You should retry this key later as it may work on your account." & @CRLF & "We recommend waiting at least one hour before attempting to activate more keys" & @CRLF & @CRLF & "WARNING: Please remember to copy your duplicate keys from the program window." & @CRLF & @CRLF & "Pressing OK will EXIT the program")
-					Quit
-				Else
-					WinClose($prodactwin)
-				EndIf
+
+		If(WinExists($prodactwin)) Then    ;if the key didn't work we are going to check if it's a duplicate
+
+			ClickAndWait($nextX, $nextY)   ;clicks next to see if it exists
+
+			WinWait($installwin, "", 5)    ;waits for installation window (if a next button existed one should appear)
+
+			If WinExists($installwin) Then ;if installation window opens then
+
+			   WinClose($installwin)       ;close it
+			   _GUICtrlEdit_AppendText($editBox, $key & @CRLF) ;write duplicate key to UI
 
 			EndIf
 
 		EndIf
-			; Finished process
-		 ;EndIf ; (end product win exist)
-	  ;EndIf ; (end steam win active)
-   ;EndIf
+
+		If(WinExists($prodactwin)) Then ;if the key didn't work and wasn't a duplicate, there might be another issue
+
+			;asks the user if the activation window is reporting invalid key or no more activation attempts
+			Local $userAnswer = MsgBox(20, "The Program Encountered an Error", "Does the Product Activation window behind this message say there have been Too Many Activation Attempts?") ;shows popup if key is bad or too many activation attemtps
+
+			;if the user said that the window says no more activation attempts
+			If($userAnswer = $IDYES) Then
+
+				WinClose($prodactwin) ;close that window
+
+				;let the user know to copy their duplicate keys and the untested keys. Pressing the OK button will close the program
+				MsgBox(48, "Warning!", "Steam won't let you activate anymore keys right now." & @CRLF & @CRLF & "The key " & $key & " and any keys after it have not been checked yet. These keys might not be duplicates and should be retried once you can activate more keys." & @CRLF & @CRLF & "We recommend waiting at least one hour before attempting to activate more keys." & @CRLF & @CRLF & "WARNING: Please remember to copy your duplicate keys (if any) from the program window and then click OK on this window")
+
+				Quit()
+
+			Else
+
+				WinClose($prodactwin) ;if the user said the issue WASN'T too many activation attempts, then it was just a bad key. This resume key processing
+
+			EndIf ;ends if userAnswer is YES or NO
+
+		EndIf ;ends If for key being a different issue
+
+	EndIf ;beginning If statement
+
 EndFunc
+
 
 ; Helper function to click a specific point and wait a specific delay
 ; Delay is 200 by default and is ignored when set to 0
@@ -194,6 +192,7 @@ Func ClickAndWait($x, $y, $wait=200)
 	  Sleep($wait)
    EndIf
 EndFunc
+
 
 ; Quits script when called
 Func Quit()
