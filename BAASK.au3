@@ -132,7 +132,7 @@ Func Redeem($key)
 
 
 		ClickAndWait($printX, $printY)	; Click on Print to see if the print box opens
-		WinWait($printwin, "", 10)       ;waits for print window
+		WinWait($printwin, "", 6)       ;waits for print window
 		If(WinExists($printwin)) Then   ;if the print window exists begin statement
 
 			WinClose($printwin)   ;close the print window
@@ -169,7 +169,7 @@ Func Redeem($key)
 				;let the user know to copy their duplicate keys and the untested keys. Pressing the OK button will close the program
 				MsgBox(48, "Warning!", "Steam won't let you activate anymore keys right now." & @CRLF & @CRLF & "The key " & $key & " and any keys after it have not been checked yet. These keys might not be duplicates and should be retried once you can activate more keys." & @CRLF & @CRLF & "We recommend waiting at least one hour before attempting to activate more keys." & @CRLF & @CRLF & "WARNING: Please remember to copy your duplicate keys (if any) from the program window and then click OK on this window")
 
-				Quit
+				Quit()
 
 			Else
 
