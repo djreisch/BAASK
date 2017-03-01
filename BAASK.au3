@@ -33,7 +33,7 @@
 ; Set up simple event based GUI with 2 labels, 1 edit box and 1 button
 Opt("GUIOnEventMode", 1)
 Global $baask = GUICreate("BAASK", 260, 600)
-GUISetOnEvent($GUI_EVENT_CLOSE, "OnClose")
+GUISetOnEvent($GUI_EVENT_CLOSE, "Quit")
 GUICtrlCreateLabel("Add Keys (one per line)", 30, 10)
 Global $editbox = GUICtrlCreateEdit("", 30, 30, 200, 400, $ES_WANTRETURN)
 GUICtrlCreateLabel("Note: Steam won't let you redeem more" & @CRLF & "than 25 keys per hour.", 30, 440)
@@ -42,6 +42,7 @@ Local $buttonMsg = "Run!"
 Local $button = GUICtrlCreateButton($buttonMsg, 80, 480, 100, 100, $BS_MULTILINE)
 GUICtrlSetOnEvent($button, OnExecute)
 GUISetState(@SW_SHOW)
+
 
 HotKeySet("{ESC}","Quit") ;Press ESC key to quit
 
@@ -64,6 +65,7 @@ Func OnExecute()
 		 $count = $count + 1
 	  EndIf
    Next
+
    If ($count > 0) Then
 	   MsgBox(64, "Key Activation Complete!", "Out of " & $count & " keys, " & _GUICtrlEdit_GetLineCount($editBox) - 3 & " were for games you already own") ;shows popup window explaining what happened
    Else
@@ -73,9 +75,9 @@ Func OnExecute()
 EndFunc
 
 ; Exits the GUI
-Func OnClose()
-   Exit
-EndFunc
+;Func OnClose()
+;   Exit
+;EndFunc
 
 ; Meaty function that emulates user's action to redeem a steam key
 Func Redeem($key)
@@ -88,7 +90,6 @@ Func Redeem($key)
    Local $workingwin = "[TITLE:Steam - Working; REGEXPCLASS:USurface\_\d*]"
    Local $printwin   = "[TITLE:Print; REGEXPCLASS:#32770]"
    Local $installwin = "[TITLE:Install - ; REGEXPCLASS:USurface\_\d*]"
-
 
 
 ;   If (WinExists($steamwin)) Then
@@ -149,6 +150,7 @@ Func Redeem($key)
 
 				WinClose($printwin)   ;close the print window
 				WinClose($prodactwin) ;close the product window, the key worked
+
 			EndIf
 
 			If(WinExists($prodactwin)) Then ;if the key didn't work we are going to check if it's a duplicate
@@ -169,9 +171,8 @@ Func Redeem($key)
 				Local $userAnswer = MsgBox(20, "The Program Encountered an Error", "Does the Product Activation window behind this message say there have been Too Many Activation Attempts?") ;shows popup if key is bad or too many activation attemtps
 
 				If($userAnswer = $IDYES) Then
-					_GUICtrlEdit_AppendText($editBox, "Unknown" & @CRLF & $key & @CRLF)
 					WinClose($prodactwin)
-					MsgBox(48, "Warning!", "Steam won't let you activate anymore keys right now." & @CRLF & "The last key used has been written to the program window underneath the unknown section. You should retry this key later as it may work on your account." & @CRLF & "We recommend waiting at least one hour before attempting to activate more keys" & @CRLF & @CRLF & "WARNING: Please remember to copy your duplicate keys from the program window." & @CRLF & @CRLF & "Pressing OK will EXIT the program")
+					MsgBox(48, "Warning!", "Steam won't let you activate anymore keys right now." & @CRLF & "The key " & $key & " and any key after it has not been tested yet. You should retry this key and all keys after it later, as they may work on your account." & @CRLF & "We recommend waiting at least one hour before attempting to activate more keys" & @CRLF & @CRLF & "WARNING: Please remember to copy your duplicate keys from the program window." & @CRLF & @CRLF & "Pressing OK will EXIT the program")
 					Quit
 				Else
 					WinClose($prodactwin)
