@@ -78,119 +78,109 @@ Func OnExecute()
    WinActivate($baask)
 EndFunc
 
-; Exits the GUI
-;Func OnClose()
-;   Exit
-;EndFunc
 
-; Meaty function that emulates user's action to redeem a steam key
+;Function that emulates the key activation process
 Func Redeem($key)
-   ;Check if the Steam window is available using the title and class name
-   ;Class name is USurface_ followed by a number, so we wildcard it
 
-   ;Local $steamwin = "[TITLE:Steam; REGEXPCLASS:USurface\_\d*]"
+   ;Variables are used to check if certain Steam windows are available using the title and class name
+   ;Class name for the Steam Activation windows are USurface_ followed by a number, so we wildcard it
 
-   Local $prodactwin = "[TITLE:Product Activation; REGEXPCLASS:USurface\_\d*]"
-   ;Local $workingwin = "[TITLE:Steam - Working; REGEXPCLASS:USurface\_\d*]"
-   Local $printwin   = "[TITLE:Print; REGEXPCLASS:#32770]"
-   Local $installwin = "[TITLE:Install - ; REGEXPCLASS:USurface\_\d*]"
-
-
-;   If (WinExists($steamwin)) Then
-;	  WinActivate($steamwin)
-;	  If (WinActive($steamwin)) Then
-		 ; Steam doesn't have traditional buttons so we can't access any controls directly
-		 ; We will need to emulate mouse clicks on specific x,y positions
-		 ; To facilitate this we will maximize the window to ensure our top-left is 0,0
-		 ; and to ensure the top menu bar is completely exposed to click on
-
-;		 WinSetState($steamwin, "", @SW_MAXIMIZE)
-;		 ClickAndWait(150, 20)				; Click Games Menu and wait briefly for it
-;		 ClickAndWait(150, 64, 0)			; Click Activate Product, Skip waiting
-
-		ShellExecute("steam://open/activateproduct")
-
-		WinWait($prodactwin, "", 5)		; Explicitly wait for Product Activation window
-		If WinExists($prodactwin) Then
-
-			local $prodactwinpos = WinGetPos($prodactwin)
-
-
-			Local $backX = $prodactwinpos[0] + 214
-			Local $backY = $prodactwinpos[1] + 374
-
-			Local $nextX = $prodactwinpos[0] + 314
-			Local $nextY = $prodactwinpos[1] + 374
-
-			Local $cancelX = $prodactwinpos[0] + 414
-			Local $cancelY = $prodactwinpos[1] + 374
-
-			Local $finishX = $prodactwinpos[0] + 414
-			Local $finishy = $prodactwinpos[1] + 374
-
-			Local $printX = $prodactwinpos[0] + 222
-			Local $printY = $prodactwinpos[1] + 278
-
-
-			; Window appears in the center of the desktop, use this as point of reference
-			; We will be clicking the second button at the bottom of the window, So
-			; calculate its offset from the center for re-usage
-
-
-			ClickAndWait($nextX, $nextY)	; Click the Next Button and wait for next page
-			ClickAndWait($nextX, $nextY)	; Click on I Agree, wait for next page
-
-			Send($key)							; Write the key in auto-focused field
-			Sleep(200)							; Pause briefly for visual feedback
-
-			ClickAndWait($nextX, $nextY)	; Click on Next to submit form
-			Sleep(200)						; Must Wait for the Working Window to come and go
+   Local $prodactwin = "[TITLE:Product Activation; REGEXPCLASS:USurface\_\d*]" ;general activation window
+   Local $printwin   = "[TITLE:Print; REGEXPCLASS:#32770]"					   ;system print window (used to check if product key worked)
+   Local $installwin = "[TITLE:Install - ; REGEXPCLASS:USurface\_\d*]"		   ;Steam game install window (used to check if duplicate key)
 
 
 
-			ClickAndWait($printX, $printY)	; Click on Print to see if the print box opens
-			WinWait($printwin, "", 5) ;waits for print window
-			If(WinExists($printwin)) Then  ;if the print window exists
+	ShellExecute("steam://open/activateproduct") ;opens the Steam activation window
 
-				WinClose($printwin)   ;close the print window
-				WinClose($prodactwin) ;close the product window, the key worked
+	WinWait($prodactwin, "", 5)		; Explicitly wait for Product Activation window
+	If WinExists($prodactwin) Then
 
-			EndIf
+		local $prodactwinpos = WinGetPos($prodactwin) ;gets position of the steam activation window
 
-			If(WinExists($prodactwin)) Then ;if the key didn't work we are going to check if it's a duplicate
 
-				ClickAndWait($nextX, $nextY) ;clicks next if available
+		;these next several variables determine the position of the activation buttons based on the window location determined in the above statement
 
-				WinWait($installwin, "", 5)  ;waits for installation window
+		Local $backX = $prodactwinpos[0] + 214
+		Local $backY = $prodactwinpos[1] + 374
 
-				If WinExists($installwin) Then ;if installation window opens...
-				   WinClose($installwin)   ;close it
-				   _GUICtrlEdit_AppendText($editBox, $key & @CRLF) ;write duplicate key to UI
-				EndIf
+		Local $nextX = $prodactwinpos[0] + 314
+		Local $nextY = $prodactwinpos[1] + 374
 
-			EndIf
+		Local $cancelX = $prodactwinpos[0] + 414
+		Local $cancelY = $prodactwinpos[1] + 374
 
-			If(WinExists($prodactwin)) Then ;if the key didn't work and wasn't a duplicate, there might be another issue
+		Local $finishX = $prodactwinpos[0] + 414
+		Local $finishy = $prodactwinpos[1] + 374
 
-				Local $userAnswer = MsgBox(20, "The Program Encountered an Error", "Does the Product Activation window behind this message say there have been Too Many Activation Attempts?") ;shows popup if key is bad or too many activation attemtps
+		Local $printX = $prodactwinpos[0] + 222
+		Local $printY = $prodactwinpos[1] + 278
 
-				If($userAnswer = $IDYES) Then
-					WinClose($prodactwin)
-					MsgBox(48, "Warning!", "Steam won't let you activate anymore keys right now." & @CRLF & @CRLF & "The key " & $key & " and any keys after it have not been checked yet. These keys might not be duplicates and should be retried once you can activate more keys." & @CRLF & @CRLF & "We recommend waiting at least one hour before attempting to activate more keys." & @CRLF & @CRLF & "WARNING: Please remember to copy your duplicate keys (if any) from the program window and then click OK on this window")
 
-					Quit
 
-				Else
-					WinClose($prodactwin)
-				EndIf
+		;BEGINS button clicking
+
+		ClickAndWait($nextX, $nextY)	; Click the Next Button and wait for next page
+		ClickAndWait($nextX, $nextY)	; Click on I Agree, wait for next page
+
+		Send($key)						; Write the key in auto-focused field
+		Sleep(200)						; Pause briefly for visual feedback
+
+		ClickAndWait($nextX, $nextY)	; Click on Next to submit form
+		Sleep(200)						; Must Wait for the Working Window to come and go
+
+
+
+		ClickAndWait($printX, $printY)	; Click on Print to see if the print box opens
+		WinWait($printwin, "", 5)       ;waits for print window
+		If(WinExists($printwin)) Then   ;if the print window exists begin statement
+
+			WinClose($printwin)   ;close the print window
+			WinClose($prodactwin) ;close the product window, the key worked
+
+		EndIf
+
+
+		If(WinExists($prodactwin)) Then    ;if the key didn't work we are going to check if it's a duplicate
+
+			ClickAndWait($nextX, $nextY)   ;clicks next to see if it exists
+
+			WinWait($installwin, "", 5)    ;waits for installation window (if a next button existed one should appear)
+
+			If WinExists($installwin) Then ;if installation window opens then
+
+			   WinClose($installwin)       ;close it
+			   _GUICtrlEdit_AppendText($editBox, $key & @CRLF) ;write duplicate key to UI
 
 			EndIf
 
 		EndIf
-			; Finished process
-		 ;EndIf ; (end product win exist)
-	  ;EndIf ; (end steam win active)
-   ;EndIf
+
+		If(WinExists($prodactwin)) Then ;if the key didn't work and wasn't a duplicate, there might be another issue
+
+			;asks the user if the activation window is reporting invalid key or no more activation attempts
+			Local $userAnswer = MsgBox(20, "The Program Encountered an Error", "Does the Product Activation window behind this message say there have been Too Many Activation Attempts?") ;shows popup if key is bad or too many activation attemtps
+
+			;if the user said that the window says no more activation attempts
+			If($userAnswer = $IDYES) Then
+
+				WinClose($prodactwin) ;close that window
+
+				;let the user know to copy their duplicate keys and the untested keys. Pressing the OK button will close the program
+				MsgBox(48, "Warning!", "Steam won't let you activate anymore keys right now." & @CRLF & @CRLF & "The key " & $key & " and any keys after it have not been checked yet. These keys might not be duplicates and should be retried once you can activate more keys." & @CRLF & @CRLF & "We recommend waiting at least one hour before attempting to activate more keys." & @CRLF & @CRLF & "WARNING: Please remember to copy your duplicate keys (if any) from the program window and then click OK on this window")
+
+				Quit
+
+			Else
+
+				WinClose($prodactwin) ;if the user said the issue WASN'T too many activation attempts, then it was just a bad key. This resume key processing
+
+			EndIf ;ends if userAnswer is YES or NO
+
+		EndIf ;ends If for key being a different issue
+
+	EndIf ;beginning If statement
+
 EndFunc
 
 
