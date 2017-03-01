@@ -132,7 +132,7 @@ Func Redeem($key)
 
 
 		ClickAndWait($printX, $printY)	; Click on Print to see if the print box opens
-		WinWait($printwin, "", 5)       ;waits for print window
+		WinWait($printwin, "", 10)       ;waits for print window
 		If(WinExists($printwin)) Then   ;if the print window exists begin statement
 
 			WinClose($printwin)   ;close the print window
