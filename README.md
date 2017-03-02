@@ -2,13 +2,6 @@
 
 ##Batch Activator for Steam Games (BASK) can activate keys automatically to your steam account.
 
-###So far there are a few issues in play still
-1. The program MUST have the Steam window as the window behind the program window. If it doesn't, the program will return complete for all keys, this create some sub issues
-1. The program WON'T work with Steam Skins
-2. If you have your Steam window elsewhere or not open, the program won't function correctly
-3. In general, the program has several bugs that will be soon fixed in future updates
-
-2. We have still yet to rename the application. Sorry for the confusion
 
 <br /><br />
 # ---- How To Use ----
