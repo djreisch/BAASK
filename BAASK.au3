@@ -24,6 +24,7 @@
 #include <File.au3>
 #include <GuiEdit.au3>
 
+#AutoIt3Wrapper_Res_Field=Productname|BAASK							;Product Name
 #AutoIt3Wrapper_Res_Comment=Batch Auto Activator for Steam keys     ;Comment field
 #AutoIt3Wrapper_Res_Description=Batch Auto Activator for Steam keys ;Description field
 #AutoIt3Wrapper_Res_Fileversion=2.1.1.0                         	;File Version
