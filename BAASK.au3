@@ -33,7 +33,6 @@
 
 ; Starts to set up simple event based GUI with 2 labels, 1 edit box and 1 button
 
-
 Opt("GUIOnEventMode", 1) ;enables on even functions
 Global $baask = GUICreate("BAASK v3.0.0", 260, 600) ;creates the baask GUI
 GUISetOnEvent($GUI_EVENT_CLOSE, "Quit")      ;enables that when the GUI closes, the script terminates
@@ -47,13 +46,19 @@ Local $button = GUICtrlCreateButton("Run!", 80, 480, 100, 100, $BS_MULTILINE) ;c
 GUICtrlSetOnEvent($button, OnExecute) ;sets that when button is clicked, execute function OnExecute
 GUISetState(@SW_SHOW) ;makes sure the GUI is shown
 
-
+Global $exitBool = false
 HotKeySet("{ESC}","Quit") ;Press ESC key to quit program at any time
 
+Main()
+
 ; Keeps the program running forever until the Quit function is called
-While True
-   Sleep(100)
-WEnd
+Func Main()
+	While Not $exitBool
+		Sleep(100)
+	WEnd
+
+	Exit
+EndFunc
 
 
 ; Attempts to redeem each line in the edit field as a key for a new game (or product)
@@ -197,10 +202,4 @@ Func ClickAndWait($x, $y, $wait=200)
    If ($wait > 0) Then
 	  Sleep($wait)
    EndIf
-EndFunc
-
-
-; Quits script when called
-Func Quit()
-    Exit
 EndFunc
