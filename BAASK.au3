@@ -33,6 +33,7 @@
 
 ; Starts to set up simple event based GUI with 2 labels, 1 edit box and 1 button
 
+
 Opt("GUIOnEventMode", 1) ;enables on even functions
 Global $baask = GUICreate("BAASK v2.1.1", 260, 600) ;creates the baask GUI
 GUISetOnEvent($GUI_EVENT_CLOSE, "Quit")      ;enables that when the GUI closes, the script terminates
@@ -86,10 +87,19 @@ Func Redeem($key)
    ;Variables are used to check if certain Steam windows are available using the title and class name
    ;Class name for the Steam Activation windows are USurface_ followed by a number, so we wildcard it
 
-   Local $prodactwin = "[TITLE:Product Activation; REGEXPCLASS:USurface\_\d*]" ;general activation window
-   Local $printwin   = "[TITLE:Print; REGEXPCLASS:#32770]"					   ;system print window (used to check if product key worked)
-   Local $installwin = "[TITLE:Install - ; REGEXPCLASS:USurface\_\d*]"		   ;Steam game install window (used to check if duplicate key)
+	Local $prodactwin = "[TITLE:Product Activation; REGEXPCLASS:USurface\_\d*]" ;general activation window
+	Local $printwin   = "[TITLE:Print; REGEXPCLASS:#32770]"					   ;system print window (used to check if product key worked)
+	Local $installwin = "[TITLE:Install - ; REGEXPCLASS:USurface\_\d*]"		   ;Steam game install window (used to check if duplicate key)
 
+
+	;Checks if the windows already exist and then closes them if they do exist
+	If WinExists($prodactwin) Then
+		WinClose($prodactwin)
+	EndIf
+
+	If WinExists($installwin) Then
+		WinClose($installwin)
+	EndIf
 
 
 	ShellExecute("steam://open/activateproduct") ;opens the Steam activation window
