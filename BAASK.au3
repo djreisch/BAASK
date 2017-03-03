@@ -27,15 +27,15 @@
 #AutoIt3Wrapper_Res_Field=Productname|BAASK							;Product Name
 #AutoIt3Wrapper_Res_Comment=Batch Auto Activator for Steam keys     ;Comment field
 #AutoIt3Wrapper_Res_Description=Batch Auto Activator for Steam keys ;Description field
-#AutoIt3Wrapper_Res_Fileversion=2.1.1.0                         	;File Version
-#AutoIt3Wrapper_Res_ProductVersion=2.1.1.0                      	;Product Version
+#AutoIt3Wrapper_Res_Fileversion=3.0.0.0                         	;File Version
+#AutoIt3Wrapper_Res_ProductVersion=3.0.0.0                      	;Product Version
 #AutoIt3Wrapper_Res_LegalCopyright=GPLv3                        	;Copyright field
 
 ; Starts to set up simple event based GUI with 2 labels, 1 edit box and 1 button
 
 
 Opt("GUIOnEventMode", 1) ;enables on even functions
-Global $baask = GUICreate("BAASK v2.1.1", 260, 600) ;creates the baask GUI
+Global $baask = GUICreate("BAASK v3.0.0", 260, 600) ;creates the baask GUI
 GUISetOnEvent($GUI_EVENT_CLOSE, "Quit")      ;enables that when the GUI closes, the script terminates
 GUICtrlCreateLabel("Add Your Keys (one per line)", 30, 10) ;creates a GUI label in the top left
 Global $editbox = GUICtrlCreateEdit("", 30, 30, 200, 400, $ES_WANTRETURN) ;creates an edit box
@@ -169,24 +169,19 @@ Func Redeem($key)
 
 		If(WinExists($prodactwin)) Then ;if the key didn't work and wasn't a duplicate, there might be another issue
 
-			;asks the user if the activation window is reporting invalid key or no more activation attempts
-			Local $userAnswer = MsgBox(20, "The Program Encountered an Error", "Does the Product Activation window behind this message say there have been Too Many Activation Attempts?") ;shows popup if key is bad or too many activation attemtps
+			Local $aCoord = PixelSearch($prodactwinpos[0]+157 , $prodactwinpos[1]+60, $prodactwinpos[0]+159, $prodactwinpos[1]+60, 0x262626)
+			If Not @error Then
 
-			;if the user said that the window says no more activation attempts
-			If($userAnswer = $IDYES) Then
-
-				WinClose($prodactwin) ;close that window
-
-				;let the user know to copy their duplicate keys and the untested keys. Pressing the OK button will close the program
-				MsgBox(48, "Warning!", "Steam won't let you activate anymore keys right now." & @CRLF & @CRLF & "The key " & $key & " and any keys after it have not been checked yet. These keys might not be duplicates and should be retried once you can activate more keys." & @CRLF & @CRLF & "We recommend waiting at least one hour before attempting to activate more keys." & @CRLF & @CRLF & "WARNING: Please remember to copy your duplicate keys (if any) from the program window and then click OK on this window")
-
-				Quit()
+				WinClose($prodactwin)
 
 			Else
 
-				WinClose($prodactwin) ;if the user said the issue WASN'T too many activation attempts, then it was just a bad key. This resume key processing
+				;this is temporary, we are going to implement a write function to a file
+				WinClose($prodactwin)
+				MsgBox(48, "Warning!", "Steam won't let you activate anymore keys right now." & @CRLF & @CRLF & "The key " & $key & " and any keys after it have not been checked yet. These keys might not be duplicates and should be retried once you can activate more keys." & @CRLF & @CRLF & "We recommend waiting at least one hour before attempting to activate more keys." & @CRLF & @CRLF & "WARNING: Please remember to copy your duplicate keys (if any) from the program window and then click OK on this window")
+				Quit()
 
-			EndIf ;ends if userAnswer is YES or NO
+			EndIf
 
 		EndIf ;ends If for key being a different issue
 
