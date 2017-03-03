@@ -33,16 +33,17 @@
 
 ; Starts to set up simple event based GUI with 2 labels, 1 edit box and 1 button
 
+
 Opt("GUIOnEventMode", 1) ;enables on even functions
-Global $baask = GUICreate("BAASK v2.1.1", 260, 531) ;creates the baask GUI
+Global $baask = GUICreate("BAASK v2.1.1", 260, 600) ;creates the baask GUI
 GUISetOnEvent($GUI_EVENT_CLOSE, "Quit")      ;enables that when the GUI closes, the script terminates
 GUICtrlCreateLabel("Add Your Keys (one per line)", 30, 10) ;creates a GUI label in the top left
-Global $editbox = GUICtrlCreateEdit("", 30, 30, 200, 331, $ES_WANTRETURN) ;creates an edit box
-GUICtrlCreateLabel("Note: Steam won't let you redeem more" & @CRLF & "than 25 keys per hour.", 30, 371) ;displays note under the text box
+Global $editbox = GUICtrlCreateEdit("", 30, 30, 200, 400, $ES_WANTRETURN) ;creates an edit box
+GUICtrlCreateLabel("Note: Steam won't let you redeem more" & @CRLF & "than 25 keys per hour.", 30, 440) ;displays note under the text box
 
 ; Create and hook up button
 ;Local $buttonMsg = "Run!" ;creates button button message
-Local $button = GUICtrlCreateButton("Run!", 80, 411, 100, 100, $BS_MULTILINE) ;creates a multi-lined button with the text
+Local $button = GUICtrlCreateButton("Run!", 80, 480, 100, 100, $BS_MULTILINE) ;creates a multi-lined button with the text
 GUICtrlSetOnEvent($button, OnExecute) ;sets that when button is clicked, execute function OnExecute
 GUISetState(@SW_SHOW) ;makes sure the GUI is shown
 
