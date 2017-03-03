@@ -203,3 +203,7 @@ Func ClickAndWait($x, $y, $wait=200)
 	  Sleep($wait)
    EndIf
 EndFunc
+
+Func Quit()
+	Exit
+EndFunc
