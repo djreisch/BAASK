@@ -1,6 +1,6 @@
 # ---- Batch Auto Activator for Steam Games ----
 
-##Batch Auto Activator for Steam Games (BAASK) can activate keys automatically to your steam account.
+##Batch Auto Activator for Steam Games (BAASK) can activate game keys automatically to your Steam account.
 
 
 <br /><br />
