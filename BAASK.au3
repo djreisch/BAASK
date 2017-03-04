@@ -27,14 +27,14 @@
 #AutoIt3Wrapper_Res_Field=Productname|BAASK							;Product Name
 #AutoIt3Wrapper_Res_Comment=Batch Auto Activator for Steam keys     ;Comment field
 #AutoIt3Wrapper_Res_Description=Batch Auto Activator for Steam keys ;Description field
-#AutoIt3Wrapper_Res_Fileversion=3.0.0.0                         	;File Version
-#AutoIt3Wrapper_Res_ProductVersion=3.0.0.0                      	;Product Version
+#AutoIt3Wrapper_Res_Fileversion=3.1.0.0                         	;File Version
+#AutoIt3Wrapper_Res_ProductVersion=3.1.0.0                      	;Product Version
 #AutoIt3Wrapper_Res_LegalCopyright=GPLv3                        	;Copyright field
 
 ; Starts to set up simple event based GUI with 2 labels, 1 edit box and 1 button
 
 Opt("GUIOnEventMode", 1) ;enables on even functions
-Global $baask = GUICreate("BAASK v3.0.0", 260, 600) ;creates the baask GUI
+Global $baask = GUICreate("BAASK v3.1.0", 260, 600) ;creates the baask GUI
 GUISetOnEvent($GUI_EVENT_CLOSE, "Quit")      ;enables that when the GUI closes, the script terminates
 GUICtrlCreateLabel("Add Your Keys (one per line)", 30, 10) ;creates a GUI label in the top left
 Global $editbox = GUICtrlCreateEdit("", 30, 30, 200, 400, $ES_WANTRETURN) ;creates an edit box
@@ -109,12 +109,6 @@ Func OnExecute()
 
 	EndIf
 
-	If($exitBool) Then
-
-		$baask = GUICreate("BAASK v3.0.0", 260, 600)
-		$editbox = GUICtrlCreateEdit("", 30, 30, 200, 550, $ES_WANTRETURN)
-
-	EndIf
 
    WinActivate($baask)
 EndFunc
@@ -206,15 +200,18 @@ Func Redeem($key)
 
 		EndIf
 
+
 		If(WinExists($prodactwin)) Then ;if the key didn't work and wasn't a duplicate, there might be another issue
 
+			;find pixels that are not gray and if they exist then it's too many activation attempts
 			Local $aCoord = PixelSearch($prodactwinpos[0]+157 , $prodactwinpos[1]+60, $prodactwinpos[0]+159, $prodactwinpos[1]+60, 0x262626)
+			;if the white pixels weren't found, close the window and do the next key
 			If Not @error Then
 
 				WinClose($prodactwin)
 
 			Else
-
+				;too many activation attempts, close the window and activate the program window while setting exitBool to true
 				WinClose($prodactwin)
 
 				WinActivate($baask)
@@ -239,9 +236,6 @@ Func ClickAndWait($x, $y, $wait=200)
    EndIf
 EndFunc
 
-Func ChangeBool()
-	$exitBool = True
-EndFunc
 
 Func Quit()
 	Exit
