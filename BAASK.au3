@@ -27,15 +27,14 @@
 #AutoIt3Wrapper_Res_Field=Productname|BAASK							;Product Name
 #AutoIt3Wrapper_Res_Comment=Batch Auto Activator for Steam keys     ;Comment field
 #AutoIt3Wrapper_Res_Description=Batch Auto Activator for Steam keys ;Description field
-#AutoIt3Wrapper_Res_Fileversion=3.0.0.0                         	;File Version
-#AutoIt3Wrapper_Res_ProductVersion=3.0.0.0                      	;Product Version
+#AutoIt3Wrapper_Res_Fileversion=3.1.0.0                         	;File Version
+#AutoIt3Wrapper_Res_ProductVersion=3.1.0.0                      	;Product Version
 #AutoIt3Wrapper_Res_LegalCopyright=GPLv3                        	;Copyright field
 
 ; Starts to set up simple event based GUI with 2 labels, 1 edit box and 1 button
 
-
 Opt("GUIOnEventMode", 1) ;enables on even functions
-Global $baask = GUICreate("BAASK v3.0.0", 260, 600) ;creates the baask GUI
+Global $baask = GUICreate("BAASK v3.1.0", 260, 600) ;creates the baask GUI
 GUISetOnEvent($GUI_EVENT_CLOSE, "Quit")      ;enables that when the GUI closes, the script terminates
 GUICtrlCreateLabel("Add Your Keys (one per line)", 30, 10) ;creates a GUI label in the top left
 Global $editbox = GUICtrlCreateEdit("", 30, 30, 200, 400, $ES_WANTRETURN) ;creates an edit box
@@ -47,36 +46,70 @@ Local $button = GUICtrlCreateButton("Run!", 80, 480, 100, 100, $BS_MULTILINE) ;c
 GUICtrlSetOnEvent($button, OnExecute) ;sets that when button is clicked, execute function OnExecute
 GUISetState(@SW_SHOW) ;makes sure the GUI is shown
 
-
+Global $exitBool = false
 HotKeySet("{ESC}","Quit") ;Press ESC key to quit program at any time
 
+Main()
+
 ; Keeps the program running forever until the Quit function is called
-While True
-   Sleep(100)
-WEnd
+Func Main()
+
+	While True
+		Sleep(100)
+	WEnd
+
+EndFunc
 
 
 ; Attempts to redeem each line in the edit field as a key for a new game (or product)
 Func OnExecute()
-   Local $textBlock = GUICtrlRead($editbox)
-   Local $keyArray = StringSplit($textBlock, @CRLF)
-   Local $count = 0
+	Local $textBlock = GUICtrlRead($editbox) ;used to pull key from GUI
+	Local $keyArray = StringSplit($textBlock, @CRLF) ;splits key block into separate key arrays
+	Local $count = 0
 
-   _GUICtrlEdit_AppendText($editBox, @CRLF & @CRLF & "Duplicate Keys:" & @CRLF)
-   ;GUICtrlSetData($editBox, "Duplicate Keys:" & @CRLF & @CRLF) ;writes header to UI box
+	GUICtrlSetData($editBox, "Duplicate Keys:" & @CRLF) ;writes header to UI box
+	;_GUICtrlEdit_AppendText($editBox, @CRLF & @CRLF & "Duplicate Keys:" & @CRLF)
 
-   For $i = 1 to $keyArray[0]
-	  If ($keyArray[$i] <> "") Then
-		 Redeem($keyArray[$i])
-		 $count = $count + 1
-	  EndIf
-   Next
 
-   If ($count > 0) Then
-	   MsgBox(64, "Key Activation Complete!", "Don't forget to copy your duplicate keys from the program window (these keys can be used on another account)") ;shows popup window explaining what happened
-   Else
-	  GUICtrlSetData($editBox, "(Psst! Type your keys here)")
-   EndIf
+	;cycles through key array and starts redeeming
+	For $i = 1 to $keyArray[0]
+		If Not ($exitBool) Then
+			If ($keyArray[$i] <> "") Then
+				Redeem($keyArray[$i])
+				$count = $i
+			EndIf
+		EndIf
+	Next
+
+	;if keys were redeemed
+	If ($count > 0) Then
+		If Not ($exitBool) Then
+			;message the keys were activated if exitBool is not true
+			MsgBox(64, "Key Activation Complete!", "Don't forget to copy your duplicate keys from the program window (these keys can be used on another account)")
+		Else
+			;if exitBool is true then append untested keys because activation attempts ran out
+			 _GUICtrlEdit_AppendText($editBox, @CRLF & "Untested Keys:" & @CRLF)
+
+			;cycles through the rest of the key array posting unchecked keys
+			For $i = $count to $keyArray[0]
+				If ($keyArray[$i] <> "") Then
+					_GUICtrlEdit_AppendText($editBox, $keyArray[$i] & @CRLF)
+				EndIf
+			Next
+
+			;lets user know whats going on, saying they ran out of keys
+			MsgBox(48, "Warning!", "Steam won't let you activate anymore keys right now." & @CRLF & @CRLF & "The keys in the Untested Keys section might not be duplicates and should be retried once you can activate more keys." & @CRLF & @CRLF & "We recommend waiting at least one hour before attempting to activate more keys." & @CRLF & @CRLF & "Please remember to copy your duplicate and untested keys from the program window")
+
+		EndIf
+
+	Else
+
+		;if the user is silly and doesn't enter in keys
+		GUICtrlSetData($editBox, "(Psst! Type your keys here)")
+
+	EndIf
+
+
    WinActivate($baask)
 EndFunc
 
@@ -167,19 +200,23 @@ Func Redeem($key)
 
 		EndIf
 
+
 		If(WinExists($prodactwin)) Then ;if the key didn't work and wasn't a duplicate, there might be another issue
 
+			;find pixels that are not gray and if they exist then it's too many activation attempts
 			Local $aCoord = PixelSearch($prodactwinpos[0]+157 , $prodactwinpos[1]+60, $prodactwinpos[0]+159, $prodactwinpos[1]+60, 0x262626)
+			;if the white pixels weren't found, close the window and do the next key
 			If Not @error Then
 
 				WinClose($prodactwin)
 
 			Else
-
-				;this is temporary, we are going to implement a write function to a file
+				;too many activation attempts, close the window and activate the program window while setting exitBool to true
 				WinClose($prodactwin)
-				MsgBox(48, "Warning!", "Steam won't let you activate anymore keys right now." & @CRLF & @CRLF & "The key " & $key & " and any keys after it have not been checked yet. These keys might not be duplicates and should be retried once you can activate more keys." & @CRLF & @CRLF & "We recommend waiting at least one hour before attempting to activate more keys." & @CRLF & @CRLF & "WARNING: Please remember to copy your duplicate keys (if any) from the program window and then click OK on this window")
-				Quit()
+
+				WinActivate($baask)
+
+				$exitBool = true
 
 			EndIf
 
@@ -200,7 +237,6 @@ Func ClickAndWait($x, $y, $wait=200)
 EndFunc
 
 
-; Quits script when called
 Func Quit()
-    Exit
+	Exit
 EndFunc
