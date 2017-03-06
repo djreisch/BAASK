@@ -31,5 +31,6 @@ However I decided instead of making a fork to a dead repository, I will proclaim
 I like the idead of what CoffeeCone was doing, and what goldenxp tried to revive (he did a good job until it died about a year ago)
 so I hope to continue this program so all game horders like me can sit back and relax as our games are activated for us.
 
-### ---- Disclaimer ----
+<br /><br />
+# ---- Disclaimer ----
 Steam and all logos relating to are registered trademarks of the Valve Corporation. This program and it's creator have no intent to infridge any copywrite laws or commit breaches against Steam or Valve TOS guidelines.
