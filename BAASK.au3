@@ -33,6 +33,7 @@
 
 Global $VERSION  = "3.2.0"
 
+
 ; Starts to set up simple event based GUI with 2 labels, 1 edit box and 1 button
 
 Opt("GUIOnEventMode", 1) ;enables on even functions
