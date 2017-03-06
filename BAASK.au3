@@ -204,9 +204,9 @@ Func Redeem($key)
 		If(WinExists($prodactwin)) Then ;if the key didn't work and wasn't a duplicate, there might be another issue
 
 			;find pixels that are not gray and if they exist then it's too many activation attempts
-			Local $aCoord = PixelSearch($prodactwinpos[0]+157 , $prodactwinpos[1]+60, $prodactwinpos[0]+159, $prodactwinpos[1]+60, 0x262626)
+			Local $aCoord = PixelSearch($prodactwinpos[0]+157 , $prodactwinpos[1]+50, $prodactwinpos[0]+180, $prodactwinpos[1]+70, 0xA8A8A8, 50)
 			;if the white pixels weren't found, close the window and do the next key
-			If Not @error Then
+			If @error Then
 
 				WinClose($prodactwin)
 
