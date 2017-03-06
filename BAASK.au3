@@ -83,6 +83,10 @@ Func OnExecute()
 
 	;if keys were redeemed
 	If ($count > 0) Then
+
+		GUICtrlSetData($button, "Exit") ;changes button text to Exit
+		GUICtrlSetOnEvent($button, Quit) ;sets that when button is clicked, execute function Quit
+
 		If Not ($exitBool) Then
 			;message the keys were activated if exitBool is not true
 			MsgBox(64, "Key Activation Complete!", "Don't forget to copy your duplicate keys from the program window (these keys can be used on another account)")
@@ -96,9 +100,6 @@ Func OnExecute()
 					_GUICtrlEdit_AppendText($editBox, $keyArray[$i] & @CRLF)
 				EndIf
 			Next
-
-			GUICtrlSetData($button, "Exit") ;changes button text to Exit
-			GUICtrlSetOnEvent($button, Quit) ;sets that when button is clicked, execute function Quit
 
 			;lets user know whats going on, saying they ran out of keys
 			MsgBox(48, "Warning!", "Steam won't let you activate anymore keys right now." & @CRLF & @CRLF & "The keys in the Untested Keys section might not be duplicates and should be retried once you can activate more keys." & @CRLF & @CRLF & "We recommend waiting at least one hour before attempting to activate more keys." & @CRLF & @CRLF & "Please remember to copy your duplicate and untested keys from the program window")
