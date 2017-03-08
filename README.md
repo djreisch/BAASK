@@ -32,5 +32,10 @@ I like the idead of what CoffeeCone was doing, and what goldenxp tried to revive
 so I hope to continue this program so all game horders like me can sit back and relax as our games are activated for us.
 
 <br /><br />
+# ---- Waffle.IO ----
+
+https://waffle.io/djreisch/BAASK
+
+<br /><br />
 # ---- Disclaimer ----
 Steam and all logos relating to are registered trademarks of the Valve Corporation. This program and it's creator have no intent to infridge any copywrite laws or commit breaches against Steam or Valve TOS guidelines.
