@@ -20,27 +20,32 @@
 #include <Constants.au3>
 #include <ButtonConstants.au3>
 #include <EditConstants.au3>
+#include <GUIConstants.au3>
 #include <GUIConstantsEx.au3>
 #include <File.au3>
 #include <GuiEdit.au3>
 
+
 #AutoIt3Wrapper_Res_Field=Productname|BAASK							;Product Name
 #AutoIt3Wrapper_Res_Comment=Batch Auto Activator for Steam keys     ;Comment field
 #AutoIt3Wrapper_Res_Description=Batch Auto Activator for Steam keys ;Description field
-#AutoIt3Wrapper_Res_Fileversion=3.1.0.0                         	;File Version
-#AutoIt3Wrapper_Res_ProductVersion=3.1.0.0                      	;Product Version
+#AutoIt3Wrapper_Res_Fileversion=3.2.0.0	                         	;File Version
+#AutoIt3Wrapper_Res_ProductVersion=3.2.0.0	                      	;Product Version
 #AutoIt3Wrapper_Res_LegalCopyright=GPLv3                        	;Copyright field
 
-; Starts to set up simple event based GUI with 2 labels, 1 edit box and 1 button
+Global $VERSION  = "3.2.0"
+
+
+;Starts to set up simple event based GUI with 2 labels, 1 edit box and 1 button
 
 Opt("GUIOnEventMode", 1) ;enables on even functions
-Global $baask = GUICreate("BAASK v3.1.0", 260, 600) ;creates the baask GUI
+Global $baask = GUICreate("BAASK v" & $VERSION, 260, 600) ;creates the baask GUI
 GUISetOnEvent($GUI_EVENT_CLOSE, "Quit")      ;enables that when the GUI closes, the script terminates
 GUICtrlCreateLabel("Add Your Keys (one per line)", 30, 10) ;creates a GUI label in the top left
 Global $editbox = GUICtrlCreateEdit("", 30, 30, 200, 400, $ES_WANTRETURN) ;creates an edit box
 GUICtrlCreateLabel("Note: Steam won't let you redeem more" & @CRLF & "than 25 keys per hour.", 30, 440) ;displays note under the text box
 
-; Create and hook up button
+;Create and hook up button
 ;Local $buttonMsg = "Run!" ;creates button button message
 Local $button = GUICtrlCreateButton("Run!", 80, 480, 100, 100, $BS_MULTILINE) ;creates a multi-lined button with the text
 GUICtrlSetOnEvent($button, OnExecute) ;sets that when button is clicked, execute function OnExecute
@@ -83,6 +88,10 @@ Func OnExecute()
 
 	;if keys were redeemed
 	If ($count > 0) Then
+
+		GUICtrlSetData($button, "Exit") ;changes button text to Exit
+		GUICtrlSetOnEvent($button, Quit) ;sets that when button is clicked, execute function Quit
+
 		If Not ($exitBool) Then
 			;message the keys were activated if exitBool is not true
 			MsgBox(64, "Key Activation Complete!", "Don't forget to copy your duplicate keys from the program window (these keys can be used on another account)")
@@ -204,9 +213,9 @@ Func Redeem($key)
 		If(WinExists($prodactwin)) Then ;if the key didn't work and wasn't a duplicate, there might be another issue
 
 			;find pixels that are not gray and if they exist then it's too many activation attempts
-			Local $aCoord = PixelSearch($prodactwinpos[0]+157 , $prodactwinpos[1]+60, $prodactwinpos[0]+159, $prodactwinpos[1]+60, 0x262626)
+			Local $aCoord = PixelSearch($prodactwinpos[0]+157 , $prodactwinpos[1]+50, $prodactwinpos[0]+180, $prodactwinpos[1]+70, 0xA8A8A8, 50)
 			;if the white pixels weren't found, close the window and do the next key
-			If Not @error Then
+			If @error Then
 
 				WinClose($prodactwin)
 
