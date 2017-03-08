@@ -1,11 +1,9 @@
 # Compiled source #
 ###################
 *.exe
-codesign.bat
 
 # User Generated Files #
 ########################
-
 resources/
 
 # OS generated files #

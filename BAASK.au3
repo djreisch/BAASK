@@ -17,6 +17,18 @@
 ; as well as BAGS GPLv3 license and in the spirit of free software
 ; this program (BAASK) is also released under GPLv3
 
+#Region
+#AutoIt3Wrapper_Res_Comment=Batch Auto Activator for Steam keys     ;Program Comment
+#AutoIt3Wrapper_Res_Description=Batch Auto Activator for Steam keys ;File Description
+#AutoIt3Wrapper_Res_Fileversion=3.2.0.0								;File Version
+#AutoIt3Wrapper_Res_ProductVersion=3.2.0.0							;Product Version
+#AutoIt3Wrapper_Res_LegalCopyright=GPLv3							;Legal Copyright
+#AutoIt3Wrapper_Res_Field=Productname|BAASK							;Program Name
+
+																	;command to run after compile to sign exe
+#AutoIt3Wrapper_Run_After=signtool sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /a BAASK.exe
+#EndRegion
+
 #include <Constants.au3>
 #include <ButtonConstants.au3>
 #include <EditConstants.au3>
@@ -24,14 +36,6 @@
 #include <GUIConstantsEx.au3>
 #include <File.au3>
 #include <GuiEdit.au3>
-
-
-#AutoIt3Wrapper_Res_Field=Productname|BAASK							;Product Name
-#AutoIt3Wrapper_Res_Comment=Batch Auto Activator for Steam keys     ;Comment field
-#AutoIt3Wrapper_Res_Description=Batch Auto Activator for Steam keys ;Description field
-#AutoIt3Wrapper_Res_Fileversion=3.2.0.0	                         	;File Version
-#AutoIt3Wrapper_Res_ProductVersion=3.2.0.0	                      	;Product Version
-#AutoIt3Wrapper_Res_LegalCopyright=GPLv3                        	;Copyright field
 
 Global $VERSION  = "3.2.0"
 
