@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/djreisch/BAASK.png?label=ready&title=Ready)](https://waffle.io/djreisch/BAASK)
 # ---- Batch Auto Activator for Steam Games ----
 
 
