@@ -20,7 +20,7 @@ Don't trust an executable you found on the internet? That's ok, go grab the sour
 
 After you launch BAASK.exe (or compile it yourself, whatever the case) you need to enter in one key per line in the key box and when finished entering keys, click run.
 Avoid additional problems by not moving the mouse or using the keyboard until all the keys have been cycled through.
-Your duplicate keys will be returned to the program, along with any untested keys (if any)
+Your duplicate keys will be returned to the program, along with any untested keys (if any).
 
 <br /><br />
 # ---- ABOUT ----
