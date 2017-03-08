@@ -25,8 +25,8 @@
 #AutoIt3Wrapper_Res_LegalCopyright=GPLv3							;Legal Copyright
 #AutoIt3Wrapper_Res_Field=Productname|BAASK							;Program Name
 
-																	;command to run after compile to sign exe
-#AutoIt3Wrapper_Run_After=signtool sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /a BAASK.exe
+;command to run after compile to sign exe
+#AutoIt3Wrapper_Run_After=resources\codesign.bat
 #EndRegion
 
 #include <Constants.au3>
