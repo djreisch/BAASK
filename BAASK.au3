@@ -20,9 +20,11 @@
 #include <Constants.au3>
 #include <ButtonConstants.au3>
 #include <EditConstants.au3>
+#include <GUIConstants.au3>
 #include <GUIConstantsEx.au3>
 #include <File.au3>
 #include <GuiEdit.au3>
+
 
 #AutoIt3Wrapper_Res_Field=Productname|BAASK							;Product Name
 #AutoIt3Wrapper_Res_Comment=Batch Auto Activator for Steam keys     ;Comment field
