@@ -20,13 +20,13 @@
 #Region
 #AutoIt3Wrapper_Res_Comment=Batch Auto Activator for Steam keys     ;Program Comment
 #AutoIt3Wrapper_Res_Description=Batch Auto Activator for Steam keys ;File Description
-#AutoIt3Wrapper_Res_Fileversion=3.2.0.0								;File Version
-#AutoIt3Wrapper_Res_ProductVersion=3.2.0.0							;Product Version
+#AutoIt3Wrapper_Res_Fileversion=3.3.0.0								;File Version
+#AutoIt3Wrapper_Res_ProductVersion=3.3.0.0							;Product Version
 #AutoIt3Wrapper_Res_LegalCopyright=GPLv3							;Legal Copyright
 #AutoIt3Wrapper_Res_Field=Productname|BAASK							;Program Name
 
 ;command to run after compile to sign exe
-#AutoIt3Wrapper_Run_After=resources\codesign.bat
+#AutoIt3Wrapper_Run_After=codesign.bat
 #EndRegion
 
 #include <Constants.au3>
@@ -37,7 +37,7 @@
 #include <File.au3>
 #include <GuiEdit.au3>
 
-Global $VERSION  = "3.2.0"
+Global $VERSION  = "3.3.0"
 
 
 ;Starts to set up simple event based GUI with 2 labels, 1 edit box and 1 button
@@ -45,7 +45,9 @@ Global $VERSION  = "3.2.0"
 Opt("GUIOnEventMode", 1) ;enables on even functions
 Global $baask = GUICreate("BAASK v" & $VERSION, 260, 600) ;creates the baask GUI
 GUISetOnEvent($GUI_EVENT_CLOSE, "Quit")      ;enables that when the GUI closes, the script terminates
+
 GUICtrlCreateLabel("Add Your Keys (one per line)", 30, 10) ;creates a GUI label in the top left
+
 Global $editbox = GUICtrlCreateEdit("", 30, 30, 200, 400, $ES_WANTRETURN) ;creates an edit box
 GUICtrlCreateLabel("Note: Steam won't let you redeem more" & @CRLF & "than 25 keys per hour.", 30, 440) ;displays note under the text box
 
