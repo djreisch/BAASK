@@ -26,7 +26,7 @@
 #AutoIt3Wrapper_Res_Field=Productname|BAASK							;Program Name
 
 ;command to run after compile to sign exe
-#AutoIt3Wrapper_Run_After=codesign.bat
+#AutoIt3Wrapper_Run_After=resources\codesign.bat
 #EndRegion
 
 #include <Constants.au3>
@@ -187,6 +187,7 @@ Func Redeem($key)
 		Local $printX = ($prodactwinpos[0] + 222) * $offset[0]
 		Local $printY = ($prodactwinpos[1] + 278) * $offset[1]
 
+		Local $print[2] = [($prodactwinpos[0] + 222) * $offset[0], ($prodactwinpos[1] + 278) * $offset[1]]
 
 		;BEGINS button clicking
 
@@ -261,6 +262,7 @@ Func ClickAndWait($x, $y, $wait=200)
 	  Sleep($wait)
    EndIf
 EndFunc
+
 
 
 Func Quit()

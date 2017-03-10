@@ -22,6 +22,12 @@ After you launch BAASK.exe (or compile it yourself, whatever the case) you need 
 Avoid additional problems by not moving the mouse or using the keyboard until all the keys have been cycled through.
 Your duplicate keys will be returned to the program, along with any untested keys (if any).
 
+###WARNING!
+
+If you have never installed a Steam game on the system you are using to activate the game key there will be issues!
+Without having installed at least ONE game the program can't correctly identify certain windows (Steam does this for some weird reason)
+Before running the program we suggest you have at least one game installed.
+
 <br /><br />
 # ---- ABOUT ----
 
