@@ -137,6 +137,7 @@ Func Redeem($key)
 
 	Local $prodactwin = "[TITLE:Product Activation; REGEXPCLASS:USurface\_\d*]" ;general activation window
 	Local $printwin   = "[TITLE:Print; REGEXPCLASS:#32770]"					   ;system print window (used to check if product key worked)
+	Local $workingwin = "[TITLE:Steam - Working; REGEXPCLASS:USurface\_\d*]"
 	Local $installwin = "[TITLE:Install - ; REGEXPCLASS:USurface\_\d*]"		   ;Steam game install window (used to check if duplicate key)
 
 
@@ -155,26 +156,36 @@ Func Redeem($key)
 	WinWait($prodactwin, "", 5)		; Explicitly wait for Product Activation window
 	If WinExists($prodactwin) Then
 
-		local $prodactwinpos = WinGetPos($prodactwin) ;gets position of the steam activation window
+		Local $prodactwinpos = WinGetPos($prodactwin)     ;gets position of the steam activation window
+		Local $windowSize = WinGetClientSize($prodactwin) ;gets size of the window to calculate offsetting
+
+		Local $offset[2] = [1, 1]
+
+		If $windowSize[0] <> 760 Or $windowSize[1] <> 400 Then
+
+			$offset[0] = $windowSize[0] / 476
+			$offset[1] = $windowSize[1] / 400
+
+		EndIf
 
 
 		;these next several variables determine the position of the activation buttons based on the window location determined in the above statement
 
-		Local $backX = $prodactwinpos[0] + 214
-		Local $backY = $prodactwinpos[1] + 374
 
-		Local $nextX = $prodactwinpos[0] + 314
-		Local $nextY = $prodactwinpos[1] + 374
+		Local $backX = ($prodactwinpos[0] + 214) * $offset[0]
+		Local $backY = ($prodactwinpos[1] + 374) * $offset[1]
 
-		Local $cancelX = $prodactwinpos[0] + 414
-		Local $cancelY = $prodactwinpos[1] + 374
+		Local $nextX = ($prodactwinpos[0] + 314) * $offset[0]
+		Local $nextY = ($prodactwinpos[1] + 374) * $offset[1]
 
-		Local $finishX = $prodactwinpos[0] + 414
-		Local $finishy = $prodactwinpos[1] + 374
+		Local $cancelX = ($prodactwinpos[0] + 414) * $offset[0]
+		Local $cancelY = ($prodactwinpos[1] + 374) * $offset[1]
 
-		Local $printX = $prodactwinpos[0] + 222
-		Local $printY = $prodactwinpos[1] + 278
+		Local $finishX = ($prodactwinpos[0] + 414) * $offset[0]
+		Local $finishY = ($prodactwinpos[1] + 374) * $offset[1]
 
+		Local $printX = ($prodactwinpos[0] + 222) * $offset[0]
+		Local $printY = ($prodactwinpos[1] + 278) * $offset[1]
 
 
 		;BEGINS button clicking
@@ -186,8 +197,8 @@ Func Redeem($key)
 		Sleep(200)						; Pause briefly for visual feedback
 
 		ClickAndWait($nextX, $nextY)	; Click on Next to submit form
-		Sleep(200)						; Must Wait for the Working Window to come and go
 
+		WinWaitClose($workingwin)       ; Must Wait for the Working Window to come and go
 
 
 		ClickAndWait($printX, $printY)	; Click on Print to see if the print box opens
