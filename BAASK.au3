@@ -20,8 +20,8 @@
 #Region
 #AutoIt3Wrapper_Res_Comment=Batch Auto Activator for Steam keys     ;Program Comment
 #AutoIt3Wrapper_Res_Description=Batch Auto Activator for Steam keys ;File Description
-#AutoIt3Wrapper_Res_Fileversion=3.3.0.0								;File Version
-#AutoIt3Wrapper_Res_ProductVersion=3.3.0.0							;Product Version
+#AutoIt3Wrapper_Res_Fileversion=3.3.1.0								;File Version
+#AutoIt3Wrapper_Res_ProductVersion=3.3.1.0							;Product Version
 #AutoIt3Wrapper_Res_LegalCopyright=GPLv3							;Legal Copyright
 #AutoIt3Wrapper_Res_Field=Productname|BAASK							;Program Name
 
@@ -37,30 +37,35 @@
 #include <File.au3>
 #include <GuiEdit.au3>
 
-Global $VERSION  = "3.3.0"
+Global $VERSION  = "3.3.1"
 
 
 ;Starts to set up simple event based GUI with 2 labels, 1 edit box and 1 button
 
-Opt("GUIOnEventMode", 1) ;enables on even functions
-Global $baask = GUICreate("BAASK v" & $VERSION, 260, 600) ;creates the baask GUI
-GUISetOnEvent($GUI_EVENT_CLOSE, "Quit")      ;enables that when the GUI closes, the script terminates
+Global $editbox
+Global $baask
+Local  $button
+Global $exitBool
 
-GUICtrlCreateLabel("Add Your Keys (one per line)", 30, 10) ;creates a GUI label in the top left
+Opt("GUIOnEventMode", 1)                           ;enables on even functions
+$baask = GUICreate("BAASK v" & $VERSION, 260, 600) ;creates the baask GUI
+GUISetOnEvent($GUI_EVENT_CLOSE, "Quit")            ;enables that when the GUI closes, the script terminates
 
-Global $editbox = GUICtrlCreateEdit("", 30, 30, 200, 400, $ES_WANTRETURN) ;creates an edit box
+GUICtrlCreateLabel("Add Your Keys (one per line)", 30, 10)         ;creates a GUI label in the top left
+
+$editbox = GUICtrlCreateEdit("", 30, 30, 200, 400, $ES_WANTRETURN) ;creates an edit box
 GUICtrlCreateLabel("Note: Steam won't let you redeem more" & @CRLF & "than 25 keys per hour.", 30, 440) ;displays note under the text box
 
 ;Create and hook up button
 ;Local $buttonMsg = "Run!" ;creates button button message
-Local $button = GUICtrlCreateButton("Run!", 80, 480, 100, 100, $BS_MULTILINE) ;creates a multi-lined button with the text
-GUICtrlSetOnEvent($button, OnExecute) ;sets that when button is clicked, execute function OnExecute
-GUISetState(@SW_SHOW) ;makes sure the GUI is shown
+$button = GUICtrlCreateButton("Run!", 80, 480, 100, 100, $BS_MULTILINE) ;creates a multi-lined button with the text
+GUICtrlSetOnEvent($button, OnExecute)                                   ;sets that when button is clicked, execute function OnExecute
+GUISetState(@SW_SHOW)                                                   ;makes sure the GUI is shown
 
-Global $exitBool = false
+$exitBool = false         ;set this to false so program doesn't exit right away
 HotKeySet("{ESC}","Quit") ;Press ESC key to quit program at any time
 
-Main()
+Main() ;start the main function (the program core)
 
 ; Keeps the program running forever until the Quit function is called
 Func Main()
@@ -74,12 +79,11 @@ EndFunc
 
 ; Attempts to redeem each line in the edit field as a key for a new game (or product)
 Func OnExecute()
-	Local $textBlock = GUICtrlRead($editbox) ;used to pull key from GUI
-	Local $keyArray = StringSplit($textBlock, @CRLF) ;splits key block into separate key arrays
-	Local $count = 0
+	Local $textBlock = GUICtrlRead($editbox)            ;used to pull key from GUI
+	Local $keyArray = StringSplit($textBlock, @CRLF)    ;splits key block into separate key arrays
+	Local $count = 0                                    ;counter used for current key
 
 	GUICtrlSetData($editBox, "Duplicate Keys:" & @CRLF) ;writes header to UI box
-	;_GUICtrlEdit_AppendText($editBox, @CRLF & @CRLF & "Duplicate Keys:" & @CRLF)
 
 
 	;cycles through key array and starts redeeming
@@ -92,16 +96,20 @@ Func OnExecute()
 		EndIf
 	Next
 
+
 	;if keys were redeemed
 	If ($count > 0) Then
 
-		GUICtrlSetData($button, "Exit") ;changes button text to Exit
+		GUICtrlSetData($button, "Exit")  ;changes button text to Exit
 		GUICtrlSetOnEvent($button, Quit) ;sets that when button is clicked, execute function Quit
 
 		If Not ($exitBool) Then
+
 			;message the keys were activated if exitBool is not true
 			MsgBox(64, "Key Activation Complete!", "Don't forget to copy your duplicate keys from the program window (these keys can be used on another account)")
+
 		Else
+
 			;if exitBool is true then append untested keys because activation attempts ran out
 			 _GUICtrlEdit_AppendText($editBox, @CRLF & "Untested Keys:" & @CRLF)
 
@@ -140,6 +148,19 @@ Func Redeem($key)
 	Local $workingwin = "[TITLE:Steam - Working; REGEXPCLASS:USurface\_\d*]"
 	Local $installwin = "[TITLE:Install - ; REGEXPCLASS:USurface\_\d*]"		   ;Steam game install window (used to check if duplicate key)
 
+	Local $prodactwinpos      ;used for the position of the activation window
+	Local $windowSize         ;used to hold the size of the activation window
+	Local $offset[2] = [1, 1] ;if size is not standard this stores the ration of the windows size to multiply by
+
+	Local $backBtn[2]         ;array for x,y of back button
+	Local $nextBtn[2]		  ;array for x,y of next button
+	Local $cancelBtn[2]		  ;array for x,y of cancel button
+	Local $finishBtn[2]		  ;array for x,y of finish button
+	Local $printBtn[2]		  ;array for x,y of print button
+
+	Local $colorAr[4]         ;;array for color values of 4 pixel locations during window search (when "Too Many Activation Attempts" gets triggered)
+
+
 
 	;Checks if the windows already exist and then closes them if they do exist
 	If WinExists($prodactwin) Then
@@ -156,12 +177,10 @@ Func Redeem($key)
 	WinWait($prodactwin, "", 5)		; Explicitly wait for Product Activation window
 	If WinExists($prodactwin) Then
 
-		Local $prodactwinpos = WinGetPos($prodactwin)     ;gets position of the steam activation window
-		Local $windowSize = WinGetClientSize($prodactwin) ;gets size of the window to calculate offsetting
+		$prodactwinpos = WinGetPos($prodactwin)     ;gets position of the steam activation window
+		$windowSize = WinGetClientSize($prodactwin) ;gets size of the window to calculate offsetting
 
-		Local $offset[2] = [1, 1]
-
-		If $windowSize[0] <> 760 Or $windowSize[1] <> 400 Then
+		If $windowSize[0] <> 476 Or $windowSize[1] <> 400 Then
 
 			$offset[0] = $windowSize[0] / 476
 			$offset[1] = $windowSize[1] / 400
@@ -169,50 +188,55 @@ Func Redeem($key)
 		EndIf
 
 
-		;these next several variables determine the position of the activation buttons based on the window location determined in the above statement
+		;these next several variables calculate and store the position of the activation buttons based on the product activation window location and the windows offset
 
-		Local $backBtn[2] = [($prodactwinpos[0] + 214) * $offset[0], ($prodactwinpos[1] + 374) * $offset[1]]
+		$backBtn[0] = ($prodactwinpos[0] + 214) * $offset[0]
+		$backBtn[1] = ($prodactwinpos[1] + 374) * $offset[1]
 
-		Local $nextBtn[2] = [($prodactwinpos[0] + 314) * $offset[0], ($prodactwinpos[1] + 374) * $offset[1]]
+		$nextBtn[0] = ($prodactwinpos[0] + 314) * $offset[0]
+		$nextBtn[1] = ($prodactwinpos[1] + 374) * $offset[1]
 
-		Local $cancelBtn[2] = [($prodactwinpos[0] + 414) * $offset[0], ($prodactwinpos[1] + 374) * $offset[1]]
+		$cancelBtn[0] = ($prodactwinpos[0] + 414) * $offset[0]
+		$cancelBtn[1] = ($prodactwinpos[1] + 374) * $offset[1]
 
-		Local $finishBtn[2] = [($prodactwinpos[0] + 414) * $offset[0], ($prodactwinpos[1] + 374) * $offset[1]]
+		$finishBtn[0] = ($prodactwinpos[0] + 414) * $offset[0]
+		$finishBtn[1] = ($prodactwinpos[1] + 374) * $offset[1]
 
-		Local $printBtn[2] = [($prodactwinpos[0] + 222) * $offset[0], ($prodactwinpos[1] + 278) * $offset[1]]
+		$printBtn[0] = ($prodactwinpos[0] + 222) * $offset[0]
+		$printBtn[1] = ($prodactwinpos[1] + 278) * $offset[1]
 
 		;BEGINS button clicking
 
-		ClickAndWait($nextBtn[0], $nextBtn[1])	; Click the Next Button and wait for next page
-		ClickAndWait($nextBtn[0], $nextBtn[1])	; Click on I Agree, wait for next page
+		ClickAndWait($nextBtn[0], $nextBtn[1])	 ; Click the Next Button and wait for next page
+		ClickAndWait($nextBtn[0], $nextBtn[1])	 ; Click on I Agree, wait for next page
 
-		Send($key)						; Write the key in auto-focused field
-		Sleep(200)						; Pause briefly for visual feedback
+		Send($key)						         ; Write the key in auto-focused field
+		Sleep(200)						         ; Pause briefly for visual feedback
 
-		ClickAndWait($nextBtn[0], $nextBtn[1])	; Click on Next to submit form
+		ClickAndWait($nextBtn[0], $nextBtn[1])	 ; Click on Next to submit form
 
-		WinWaitClose($workingwin)       ; Must Wait for the Working Window to come and go
+		WinWaitClose($workingwin)                ; Must Wait for the Working Window to come and go
 
 
-		ClickAndWait($printBtn[0], $printBtn[1])	; Click on Print to see if the print box opens
-		WinWait($printwin, "", 6)       ;waits for print window
-		If(WinExists($printwin)) Then   ;if the print window exists begin statement
+		ClickAndWait($printBtn[0], $printBtn[1]) ; Click on Print to see if the print box opens
+		WinWait($printwin, "", 6)                ;waits for print window
+		If(WinExists($printwin)) Then            ;if the print window exists begin statement
 
-			WinClose($printwin)   ;close the print window
-			WinClose($prodactwin) ;close the product window, the key worked
+			WinClose($printwin)                  ;close the print window
+			WinClose($prodactwin)                ;close the product window, the key worked
 
 		EndIf
 
 
-		If(WinExists($prodactwin)) Then    ;if the key didn't work we are going to check if it's a duplicate
+		If(WinExists($prodactwin)) Then            ;if the key didn't work we are going to check if it's a duplicate
 
-			ClickAndWait($nextBtn[0], $nextBtn[1])   ;clicks next to see if it exists
+			ClickAndWait($nextBtn[0], $nextBtn[1]) ;clicks next to see if it exists
 
-			WinWait($installwin, "", 5)    ;waits for installation window (if a next button existed one should appear)
+			WinWait($installwin, "", 5)            ;waits for installation window (if a next button existed one should appear)
 
-			If WinExists($installwin) Then ;if installation window opens then
+			If WinExists($installwin) Then         ;if installation window opens then
 
-			   WinClose($installwin)       ;close it
+			   WinClose($installwin)               ;close it
 			   _GUICtrlEdit_AppendText($editBox, $key & @CRLF) ;write duplicate key to UI
 
 			EndIf
@@ -223,8 +247,6 @@ Func Redeem($key)
 		If(WinExists($prodactwin)) Then ;if the key didn't work and wasn't a duplicate, there might be another issue
 
 			;find pixels that are not gray and if they exist then it's too many activation attempts
-
-			Local $colorAr[4]
 
 			$colorAr[0] = PixelGetColor($prodactwinpos[0]+157 , $prodactwinpos[1]+59, $prodactwin)
 			$colorAr[1] = PixelGetColor($prodactwinpos[0]+158 , $prodactwinpos[1]+59, $prodactwin)
