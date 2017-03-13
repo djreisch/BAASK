@@ -171,38 +171,30 @@ Func Redeem($key)
 
 		;these next several variables determine the position of the activation buttons based on the window location determined in the above statement
 
+		Local $backBtn[2] = [($prodactwinpos[0] + 214) * $offset[0], ($prodactwinpos[1] + 374) * $offset[1]]
 
-		Local $backX = ($prodactwinpos[0] + 214) * $offset[0]
-		Local $backY = ($prodactwinpos[1] + 374) * $offset[1]
+		Local $nextBtn[2] = [($prodactwinpos[0] + 314) * $offset[0], ($prodactwinpos[1] + 374) * $offset[1]]
 
-		Local $nextX = ($prodactwinpos[0] + 314) * $offset[0]
-		Local $nextY = ($prodactwinpos[1] + 374) * $offset[1]
+		Local $cancelBtn[2] = [($prodactwinpos[0] + 414) * $offset[0], ($prodactwinpos[1] + 374) * $offset[1]]
 
-		Local $cancelX = ($prodactwinpos[0] + 414) * $offset[0]
-		Local $cancelY = ($prodactwinpos[1] + 374) * $offset[1]
+		Local $finishBtn[2] = [($prodactwinpos[0] + 414) * $offset[0], ($prodactwinpos[1] + 374) * $offset[1]]
 
-		Local $finishX = ($prodactwinpos[0] + 414) * $offset[0]
-		Local $finishY = ($prodactwinpos[1] + 374) * $offset[1]
-
-		Local $printX = ($prodactwinpos[0] + 222) * $offset[0]
-		Local $printY = ($prodactwinpos[1] + 278) * $offset[1]
-
-		Local $print[2] = [($prodactwinpos[0] + 222) * $offset[0], ($prodactwinpos[1] + 278) * $offset[1]]
+		Local $printBtn[2] = [($prodactwinpos[0] + 222) * $offset[0], ($prodactwinpos[1] + 278) * $offset[1]]
 
 		;BEGINS button clicking
 
-		ClickAndWait($nextX, $nextY)	; Click the Next Button and wait for next page
-		ClickAndWait($nextX, $nextY)	; Click on I Agree, wait for next page
+		ClickAndWait($nextBtn[0], $nextBtn[1])	; Click the Next Button and wait for next page
+		ClickAndWait($nextBtn[0], $nextBtn[1])	; Click on I Agree, wait for next page
 
 		Send($key)						; Write the key in auto-focused field
 		Sleep(200)						; Pause briefly for visual feedback
 
-		ClickAndWait($nextX, $nextY)	; Click on Next to submit form
+		ClickAndWait($nextBtn[0], $nextBtn[1])	; Click on Next to submit form
 
 		WinWaitClose($workingwin)       ; Must Wait for the Working Window to come and go
 
 
-		ClickAndWait($printX, $printY)	; Click on Print to see if the print box opens
+		ClickAndWait($printBtn[0], $printBtn[1])	; Click on Print to see if the print box opens
 		WinWait($printwin, "", 6)       ;waits for print window
 		If(WinExists($printwin)) Then   ;if the print window exists begin statement
 
@@ -214,7 +206,7 @@ Func Redeem($key)
 
 		If(WinExists($prodactwin)) Then    ;if the key didn't work we are going to check if it's a duplicate
 
-			ClickAndWait($nextX, $nextY)   ;clicks next to see if it exists
+			ClickAndWait($nextBtn[0], $nextBtn[1])   ;clicks next to see if it exists
 
 			WinWait($installwin, "", 5)    ;waits for installation window (if a next button existed one should appear)
 
@@ -231,9 +223,17 @@ Func Redeem($key)
 		If(WinExists($prodactwin)) Then ;if the key didn't work and wasn't a duplicate, there might be another issue
 
 			;find pixels that are not gray and if they exist then it's too many activation attempts
-			Local $aCoord = PixelSearch($prodactwinpos[0]+157 , $prodactwinpos[1]+50, $prodactwinpos[0]+180, $prodactwinpos[1]+70, 0xA8A8A8, 50)
+
+			Local $colorAr[4]
+
+			$colorAr[0] = PixelGetColor($prodactwinpos[0]+157 , $prodactwinpos[1]+59, $prodactwin)
+			$colorAr[1] = PixelGetColor($prodactwinpos[0]+158 , $prodactwinpos[1]+59, $prodactwin)
+			$colorAr[2] = PixelGetColor($prodactwinpos[0]+159 , $prodactwinpos[1]+59, $prodactwin)
+			$colorAr[3] = PixelGetColor($prodactwinpos[0]+160 , $prodactwinpos[1]+59, $prodactwin)
+
+
 			;if the white pixels weren't found, close the window and do the next key
-			If @error Then
+			If (($colorAr[0] == $colorAr[1]) And ($colorAr[1] == $colorAr[2]) And ($colorAr[2] == $colorAr[3])) Then
 
 				WinClose($prodactwin)
 
@@ -262,7 +262,6 @@ Func ClickAndWait($x, $y, $wait=200)
 	  Sleep($wait)
    EndIf
 EndFunc
-
 
 
 Func Quit()
