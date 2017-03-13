@@ -205,6 +205,7 @@ Func Redeem($key)
 		$printBtn[0] = ($prodactwinpos[0] + 222) * $offset[0]
 		$printBtn[1] = ($prodactwinpos[1] + 278) * $offset[1]
 
+
 		;BEGINS button clicking
 
 		ClickAndWait($nextBtn[0], $nextBtn[1])	 ; Click the Next Button and wait for next page
