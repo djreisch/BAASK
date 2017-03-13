@@ -172,13 +172,9 @@ Func Redeem($key)
 		;these next several variables determine the position of the activation buttons based on the window location determined in the above statement
 
 		Local $backBtn[2] = [($prodactwinpos[0] + 214) * $offset[0], ($prodactwinpos[1] + 374) * $offset[1]]
-
 		Local $nextBtn[2] = [($prodactwinpos[0] + 314) * $offset[0], ($prodactwinpos[1] + 374) * $offset[1]]
-
 		Local $cancelBtn[2] = [($prodactwinpos[0] + 414) * $offset[0], ($prodactwinpos[1] + 374) * $offset[1]]
-
 		Local $finishBtn[2] = [($prodactwinpos[0] + 414) * $offset[0], ($prodactwinpos[1] + 374) * $offset[1]]
-
 		Local $printBtn[2] = [($prodactwinpos[0] + 222) * $offset[0], ($prodactwinpos[1] + 278) * $offset[1]]
 
 		;BEGINS button clicking
