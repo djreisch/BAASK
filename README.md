@@ -8,7 +8,7 @@
 <br /><br />
 # ---- How To Use ----
 
-###Head over to the Release Page
+### Head over to the Release Page
 
 There you can download the compiled binaries and just run the executable file and be fine.
 
@@ -16,13 +16,13 @@ There you can download the compiled binaries and just run the executable file an
 
 Don't trust an executable you found on the internet? That's ok, go grab the source code from the release page, or clone this repo
 
-###Launching Program
+### Launching Program
 
 After you launch BAASK.exe (or compile it yourself, whatever the case) you need to enter in one key per line in the key box and when finished entering keys, click run.
 Avoid additional problems by not moving the mouse or using the keyboard until all the keys have been cycled through.
 Your duplicate keys will be returned to the program, along with any untested keys (if any).
 
-###WARNING!
+### WARNING!
 
 If you have never installed a Steam game on the system you are using to activate the game key there will be issues!
 Without having installed at least ONE game the program can't correctly identify certain windows (Steam does this for some weird reason)
