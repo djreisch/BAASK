@@ -1,7 +1,7 @@
 # ---- Batch Auto Activator for Steam Games ----
 
 
-##Batch Auto Activator for Steam Games (BAASK) can activate game keys automatically to your Steam account.
+## Batch Auto Activator for Steam Games (BAASK) can activate game keys automatically to your Steam account.
 
 
 
@@ -12,7 +12,7 @@
 
 There you can download the compiled binaries and just run the executable file and be fine.
 
-###Grab the source and complile it yourself
+### Grab the source and complile it yourself
 
 Don't trust an executable you found on the internet? That's ok, go grab the source code from the release page, or clone this repo
 
